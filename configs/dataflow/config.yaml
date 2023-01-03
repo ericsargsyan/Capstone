@@ -7,4 +7,4 @@ datasets:
 datasets_to_process: [MozillaCV]
 # language_detection, accent_detection
 task: [accent_detection]
-languages: [en]
+languages: [en, fr]
