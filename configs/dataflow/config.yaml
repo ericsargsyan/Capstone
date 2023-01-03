@@ -6,5 +6,5 @@ datasets:
     source_path: /Users/eric/Desktop/DL/source_data/MozillaCV
 datasets_to_process: [MozillaCV]
 # language_detection, accent_detection
-task: [accent_detection]
+task: [language_detection, accent_detection]
 languages: [en, fr]
