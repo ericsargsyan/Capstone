@@ -1,0 +1,15 @@
+data:
+  train_path: [/Users/eric/desktop/dl/data/language_detection/MozillaCV/en/TRAIN,
+               /Users/eric/desktop/dl/data/language_detection/MozillaCV/fr/TRAIN]
+  val_path: []
+  test_path: []
+
+log_dir: /Users/eric/Desktop/DL/Capstone/language_detection_logs
+
+dataloader:
+  batch_size: 212
+  num_workers: 2
+
+pl_trainer:
+  max_epochs: 500
+  accelerator: mps
