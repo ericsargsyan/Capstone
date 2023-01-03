@@ -1,0 +1,10 @@
+samplerate: 16000
+duration: 5
+target_dir: /Users/eric/Desktop/DL/data
+datasets:
+  MozillaCV:
+    source_path: /Users/eric/Desktop/DL/source_data/MozillaCV
+datasets_to_process: [MozillaCV]
+# language_detection, accent_detection
+task: [accent_detection]
+languages: [en]
