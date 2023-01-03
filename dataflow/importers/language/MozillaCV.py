@@ -46,11 +46,11 @@ class MozillaCVLImporter:
             labels_path = os.path.join(self.csv_path, f'{split}_labels.csv')
 
             if not os.path.exists(labels_path):
-                with open(self.csv_path, 'w') as file:
+                with open(labels_path, 'w') as file:
                     header = csv.writer(file)
                     header.writerow(['index', 'path', 'language'])
 
-            with open(self.csv_path, 'a+') as file:
+            with open(labels_path, 'a+') as file:
                 csvwriter = csv.writer(file)
                 csvwriter.writerow([index, new_audio_filepath, language])
 
