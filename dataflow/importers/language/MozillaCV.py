@@ -11,8 +11,9 @@ class MozillaCVLImporter:
     def __init__(self, config):
         self.source_path = config['datasets']['MozillaCV']['source_path']
         self.target_dir = os.path.join(config['target_dir'], 'language_detection', 'MozillaCV')
-        self.csv_path = os.path.join(config['target_dir'], 'language_detection')
+        self.csv_path = os.path.join(config['target_dir'], 'language_detection', 'labels')
         os.makedirs(self.target_dir, exist_ok=True)
+        os.makedirs(self.csv_path, exist_ok=True)
         self.samplerate = config['samplerate']
         self.duration = config['duration']
         self.languages = config['languages']
@@ -43,7 +44,7 @@ class MozillaCVLImporter:
             new_audio_filepath = os.path.join(self.target_dir, language, split, f'{file_name}.wav')
             sf.write(new_audio_filepath, data, self.samplerate)
 
-            labels_path = os.path.join(self.csv_path, f'{split}_labels.csv')
+            labels_path = os.path.join(self.csv_path, f'{split}_mozilla.csv')
 
             if not os.path.exists(labels_path):
                 with open(labels_path, 'w') as file:
