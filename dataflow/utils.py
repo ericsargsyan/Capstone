@@ -1,8 +1,10 @@
-import csv
 import yaml
 import librosa
 import soundfile as sf
 import numpy as np
+from tqdm import tqdm
+import pandas as pd
+import os
 
 
 def read_yaml(path):
@@ -24,12 +26,16 @@ def format_audio(current_path, self_samplerate, self_duration):
 
     return data
 
-def read_tsv(path):
-    with open("validated.tsv", 'r') as file:
-        tsv_file = csv.reader(file, delimiter="\t")
-        i = 0
-        for line in tsv_file:
-            i += 1
-            print(line)
-            if i == 2:
-                break
+
+def mp3_to_wav(languages, path):
+    for language in languages:
+        dataset = pd.read_table(os.path.join(path, language, 'validated.tsv'))
+        for audio_path in tqdm(dataset['path']):
+            out_path = audio_path[:-3]
+            audio_to_convert = os.path.join(path, language, 'clips', audio_path)
+            output_full_path = os.path.join(path, language, 'wav_clips', out_path)
+            command = f"ffmpeg -i {audio_to_convert} -acodec pcm_s16le -ac 1 -ar 16000 {output_full_path}wav"
+            os.system(command)
+        # os.system(f'rm -r {language}')
+        os.system(f'mv -T {os.path.join(path, language, "clips")} old_clips')
+        os.system(f'rm -T {os.path.join(path, language, "wav_clips")} clips')
