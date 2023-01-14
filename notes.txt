@@ -1,0 +1,31 @@
+# Checking available driver
+nvidia-smi
+
+# Clear memory from GPU
+kill -9 process_number
+
+# download content
+wget url
+
+#ffmpeg from mp3 to wav
+ffmpeg -i input.mp3 -acodec pcm_s16le -ac 1 -ar 16000 output.wav
+
+# unarchive files
+sudo tar -xf cv-corpus-12.0-2022-12-07-de.tar.gz
+
+# count items in a directory
+sudo ls en/clips | wc -l
+
+# find file
+find ./ -type f -name common_voice_en_25006511.wav
+
+# github connections
+# genereting ssh
+    1) cd ~/.ssh
+    2) ssh-keygen -o -t rsa -C "email@gmail.com"
+    3) cat id_rsa.pub
+    4) add to you github generated key
+    5) git clone with ssh key url
+# setting configs
+    git config --global user.name "username"
+    git config --global user.email "email@gmail.com"
