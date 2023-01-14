@@ -3,6 +3,7 @@ import argparse
 from dataflow.utils import read_yaml
 from dataflow.importers.language.MozillaCV import MozillaCVLImporter
 from dataflow.importers.accent.MozillaCV import MozillaCVAImporter
+from dataflow.utils import mp3_to_wav
 
 
 def arg_parser():
@@ -23,6 +24,8 @@ if __name__ == '__main__':
     parser = arg_parser()
     config = read_yaml(parser.config_path)
     datasets_to_process = config['datasets_to_process']
+
+    mp3_to_wav(config['languages'], config['datasets']['MozillaCV']['source_path'])
 
     for task in config['task']:
         print(f'--------------------------------------------------------------\t'
