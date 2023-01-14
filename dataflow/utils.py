@@ -14,8 +14,8 @@ def read_yaml(path):
 
 
 def format_audio(current_path, self_samplerate, self_duration):
-    data_raw, samplerate = sf.read(current_path)
-    data = librosa.resample(data_raw, target_sr=self_samplerate, orig_sr=samplerate)
+    data, samplerate = sf.read(current_path)
+    # data = librosa.resample(data_raw, target_sr=self_samplerate, orig_sr=samplerate)
     duration = data.shape[0] / self_samplerate
 
     if duration > self_duration:
