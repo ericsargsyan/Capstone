@@ -5,6 +5,6 @@ datasets:
   MozillaCV:
     source_path: /Users/eric/Desktop/DL/source_data/MozillaCV
 datasets_to_process: [MozillaCV]
-
-task: [language_detection] # language_detection, accent_detection
+# Must be one of language_detection, accent_detection
+task: [language_detection]
 languages: [en]
