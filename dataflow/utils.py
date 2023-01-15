@@ -38,4 +38,4 @@ def mp3_to_wav(languages, path):
             os.system(command)
         # os.system(f'rm -r {language}')
         os.system(f'mv -T {os.path.join(path, language, "clips")} old_clips')
-        os.system(f'rm -T {os.path.join(path, language, "wav_clips")} clips')
+        os.system(f'mv -T {os.path.join(path, language, "wav_clips")} clips')
