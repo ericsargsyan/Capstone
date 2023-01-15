@@ -25,7 +25,9 @@ if __name__ == '__main__':
     config = read_yaml(parser.config_path)
     datasets_to_process = config['datasets_to_process']
 
-    mp3_to_wav(config['languages'], config['datasets']['MozillaCV']['source_path'])
+    # mp3_to_wav(config['languages'], config['datasets']['MozillaCV']['source_path'])
+
+    # exit()
 
     for task in config['task']:
         print(f'--------------------------------------------------------------\t'
