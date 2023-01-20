@@ -29,3 +29,5 @@ find ./ -type f -name common_voice_en_25006511.wav
 # setting configs
     git config --global user.name "username"
     git config --global user.email "email@gmail.com"
+
+# Gor github config
