@@ -11,7 +11,7 @@ wget url
 ffmpeg -i input.mp3 -acodec pcm_s16le -ac 1 -ar 16000 output.wav
 
 # unarchive files
-sudo tar -xf cv-corpus-12.0-2022-12-07-de.tar.gz
+sudo tar -xvf cv-corpus-12.0-2022-12-07-de.tar.gz
 
 # count items in a directory
 sudo ls en/clips | wc -l
