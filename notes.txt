@@ -17,7 +17,10 @@ tar -xvf cv-corpus-12.0-2022-12-07-de.tar.gz
 ls en/clips | wc -l
 
 # find file
-find ./ -type f -name common_voice_en_25006511.wav
+find ./ -type f -name filename
+
+# check the size of file
+du -sh file_path
 
 # github connections
     # genereting ssh
