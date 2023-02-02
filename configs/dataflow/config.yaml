@@ -1,10 +1,17 @@
 samplerate: 16000
 duration: 5
-target_dir: /Users/eric/Desktop/DL/data
+target_dir: /media/capstone/HDD2/data
 datasets:
   MozillaCV:
-    source_path: /Users/eric/Desktop/DL/source_data/MozillaCV
+    source_path: /media/capstone/HDD2/source_data/MozillaCV
+               # /media/capstone/2a6ab405-5ae8-46b5-aefa-ba48d1ed763c/source_data/MozillaCV
 datasets_to_process: [MozillaCV]
-# Must be one of language_detection, accent_detection
-task: [language_detection]
+# language_detection, accent_detection
+task: [language_detection, accent_detection]
+# en, es, de, fr, be, rw, ca
 languages: [en]
+accents: [en, indian]
+convert:
+  need_to_convert: True
+  datasets_to_convert: [MozillaCV]
+  wav: True
