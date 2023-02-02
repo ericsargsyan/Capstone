@@ -1,9 +1,8 @@
 import os
 import argparse
 from dataflow.utils import read_yaml
-from dataflow.importers.language.MozillaCV import MozillaCVLImporter
-from dataflow.importers.accent.MozillaCV import MozillaCVAImporter
 from dataflow.utils import mp3_to_wav
+from dataflow.importers.Mozilla import LanguageImporter, AccentImporter
 
 
 def arg_parser():
@@ -15,24 +14,21 @@ def arg_parser():
 
 
 name_to_class = {'language_detection':
-                     {'MozillaCV': MozillaCVLImporter},
+                     {'MozillaCV': LanguageImporter},
                  'accent_detection':
-                     {'MozillaCV': MozillaCVAImporter}
+                     {'MozillaCV': AccentImporter}
                  }
 
 if __name__ == '__main__':
     parser = arg_parser()
     config = read_yaml(parser.config_path)
-    datasets_to_process = config['datasets_to_process']
 
-    # mp3_to_wav(config['languages'], config['datasets']['MozillaCV']['source_path'])
-
-    # exit()
+    # if config['convert']['need_to_convert']:
+    #     for convert_data in config['convert']['datasets_to_convert']:
+    #         mp3_to_wav(config['languages'], config['datasets'][convert_data]['source_path'])
 
     for task in config['task']:
-        print(f'--------------------------------------------------------------\t'
-              f'Processing {task.title()} Data'
-              f'\t--------------------------------------------------------------')
+        print(f'{task.title():-^200}')
         os.makedirs(os.path.join(config['target_dir'], task), exist_ok=True)
 
         for dataset_name in config['datasets_to_process']:
