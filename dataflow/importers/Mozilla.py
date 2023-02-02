@@ -22,7 +22,7 @@ class MozillaCVImporter:
 
         self.task = task
 
-        if config['system'] == 'Linux':
+        if config['convert']['wav']:
             self.file_ending = 'wav'
             self.resample = False
         else:
@@ -47,34 +47,36 @@ class MozillaCVImporter:
             self.train_dataset = validated_dataset[~validated_dataset.path.isin(self.test_dataset.path)]
             self.train_dataset = self.train_dataset[~self.train_dataset.path.isin(self.dev_dataset.path)]
 
-            if self.task == 'language_detection':
-                self.process_data(self.test_dataset, 'TEST', language)
-                self.process_data(self.dev_dataset, 'DEV', language)
-                self.process_data(self.train_dataset, 'TRAIN', language)
+            self._task_related_processing()
+
+            self.process_data(self.test_dataset, 'TEST', language)
+            self.process_data(self.dev_dataset, 'DEV', language)
+            self.process_data(self.train_dataset, 'TRAIN', language)
+
+    def _get_audio_filepath_label(self, audios, split, file_name, index, language):
+        raise NotImplementedError
+
+    def _task_related_processing(self):
+        raise NotImplementedError
 
     def process_data(self, audios, split, language):
-        print(f'------------------------------------------------------------------------'
-              f' Processing {split.upper()} Data '
-              f'------------------------------------------------------------------------')
-        os.makedirs(os.path.join(self.target_dir, language, split), exist_ok=True)
+        print(f' Processing {split.upper()} Data ')
 
         index = 0
 
-        if self.task == 'language_detection':
-            for file_name in tqdm(audios['path'][:1500]):
-                current_path = os.path.join(self.source_path, language, 'clips', f'{file_name[:-3]}{self.file_ending}')
-                data = format_audio(current_path, self.samplerate, self.duration, self.resample)
+        for file_name in tqdm(audios['path']):
+            current_path = os.path.join(self.source_path, language, 'clips', f'{file_name[:-3]}{self.file_ending}')
+            data = format_audio(current_path, self.samplerate, self.duration, self.resample)
 
-                new_audio_filepath = os.path.join(self.target_dir, language, split, f'{file_name[:-3]}{self.file_ending}')
-                sf.write(new_audio_filepath, data, self.samplerate)
+            new_audio_filepath, label = self._get_audio_filepath_label(audios, split, file_name, index, language)
+            sf.write(new_audio_filepath, data, self.samplerate)
+            labels_path = os.path.join(self.csv_path, f'{split}_mozilla.csv')
 
-                labels_path = os.path.join(self.csv_path, f'{split}_mozilla.csv')
+            with open(labels_path, 'a+') as file:
+                csvwriter = csv.writer(file)
+                csvwriter.writerow([index, new_audio_filepath, label])
 
-                with open(labels_path, 'a+') as file:
-                    csvwriter = csv.writer(file)
-                    csvwriter.writerow([index, new_audio_filepath, language])
-
-                index += 1
+            index += 1
 
 
 class LanguageImporter(MozillaCVImporter):
@@ -85,8 +87,16 @@ class LanguageImporter(MozillaCVImporter):
     def import_dataset(self):
         super(LanguageImporter, self).import_datasets(self.languages)
 
-    # def process_data(self, audios, language, split):
-    #     super(LanguageImporter, self).import_datasets(self.languages)
+    def _task_related_processing(self):
+        pass
+
+    def _get_audio_filepath_label(self, audios, split, file_name, index, language):
+        new_audio_filepath = os.path.join(self.target_dir, language, split, f'{file_name[:-3]}{self.file_ending}')
+        return new_audio_filepath, language
+
+    def process_data(self, audios, split, language):
+        os.makedirs(os.path.join(self.target_dir, language, split), exist_ok=True)
+        super(LanguageImporter, self).process_data(audios, split, language)
 
 
 class AccentImporter(MozillaCVImporter):
@@ -95,41 +105,24 @@ class AccentImporter(MozillaCVImporter):
         self.accents = config['accents']
         self.languages = ['en']
 
-    def import_dataset(self):
-        super(AccentImporter, self).import_datasets(self.languages)
-
-        self.test_dataset = self.test_dataset[self.test_dataset['accents'].notnull()]
-        self.train_dataset = self.train_dataset[self.train_dataset['accents'].notnull()]
-        self.dev_dataset = self.dev_dataset[self.dev_dataset['accents'].notnull()]
+    def _task_related_processing(self):
+        self.test_dataset = self.test_dataset[self.test_dataset['accents'].isin(self.accents)]
+        self.train_dataset = self.train_dataset[self.train_dataset['accents'].isin(self.accents)]
+        self.dev_dataset = self.dev_dataset[self.dev_dataset['accents'].isin(self.accents)]
 
         self.train_dataset = self.train_dataset.reset_index()
         self.test_dataset = self.test_dataset.reset_index()
         self.dev_dataset = self.dev_dataset.reset_index()
 
-        self.process_data(self.test_dataset, split='TEST')
-        self.process_data(self.dev_dataset, split='DEV')
-        self.process_data(self.train_dataset, split='TRAIN')
+    def _get_audio_filepath_label(self, audios, split, file_name, index, language):
+        accent = audios.loc[audios['path'] == file_name]['accents'][index]
+        new_audio_filepath = os.path.join(self.target_dir, split, f'{file_name[:-3]}{self.file_ending}')
 
-    def process_data(self, audios, split, language='en'):
-        print(f'------------------------------------------------------------------------'
-              f' Processing {split.upper()} Data '
-              f'------------------------------------------------------------------------')
+        return new_audio_filepath, accent
+
+    def import_dataset(self):
+        super(AccentImporter, self).import_datasets(self.languages)
+
+    def process_data(self, audios, split, language):
         os.makedirs(os.path.join(self.target_dir, split), exist_ok=True)
-
-        index = 0
-
-        for file_name in tqdm(audios['path'][:1500]):
-            current_path = os.path.join(self.source_path, language, 'clips', f'{file_name[:-3]}{self.file_ending}')
-            data = format_audio(current_path, self.samplerate, self.duration, self.resample)
-            accent = audios.loc[audios['path'] == file_name]['accents'][index]
-
-            new_audio_filepath = os.path.join(self.target_dir, split, f'{file_name[:-3]}{self.file_ending}')
-            sf.write(new_audio_filepath, data, self.samplerate)
-
-            labels_path = os.path.join(self.csv_path, f'{split}_mozilla.csv')
-
-            with open(labels_path, 'a+') as file:
-                csvwriter = csv.writer(file)
-                csvwriter.writerow([index, new_audio_filepath, accent])
-
-            index += 1
+        super(AccentImporter, self).process_data(audios, split, language)
