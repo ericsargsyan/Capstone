@@ -4,7 +4,6 @@ target_dir: /media/capstone/HDD2/data
 datasets:
   MozillaCV:
     source_path: /media/capstone/HDD2/source_data/MozillaCV
-               # /media/capstone/2a6ab405-5ae8-46b5-aefa-ba48d1ed763c/source_data/MozillaCV
 datasets_to_process: [MozillaCV]
 # language_detection, accent_detection
 task: [language_detection, accent_detection]
