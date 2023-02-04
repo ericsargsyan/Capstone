@@ -26,7 +26,6 @@ def format_audio(current_path, self_samplerate, self_duration, resample):
         data = data[:self_samplerate * self_duration]
     else:
         diff = self_duration * self_samplerate - data.shape[0]
-
         probability = np.random.rand()
         p, p_1 = int(diff * probability), diff - int(diff * probability)
         data = np.pad(data, pad_width=(p, p_1))
@@ -43,8 +42,8 @@ def mp3_to_wav(languages, path):
         for audio_path in tqdm(dataset['path']):
             out_path = audio_path[:-3]
             audio_to_convert = os.path.join(path, language, 'clips', audio_path)
-            output_full_path = os.path.join(path, language, 'wav_clips', out_path)
-            command = f"ffmpeg -y -hwaccel cuda -i {audio_to_convert} -acodec pcm_s16le -ac 1 -ar 16000 {output_full_path}wav"
+            output_path = os.path.join(path, language, 'wav_clips', out_path)
+            command = f'ffmpeg -y -hwaccel cuda -i {audio_to_convert} -acodec pcm_s16le -ac 1 -ar 16000 {output_path}wav'
             os.system(command)
 
         os.system(f'mv {os.path.join(partial_path, "clips")} {os.path.join(partial_path, "old_clips")}')
