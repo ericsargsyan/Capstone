@@ -14,21 +14,21 @@ def arg_parser():
 
 
 name_to_class = {'language_detection':
-                     {'MozillaCV': LanguageImporter},
+                            {'MozillaCV': LanguageImporter},
                  'accent_detection':
-                     {'MozillaCV': AccentImporter}
+                            {'MozillaCV': AccentImporter}
                  }
 
 if __name__ == '__main__':
     parser = arg_parser()
     config = read_yaml(parser.config_path)
 
-    # if config['convert']['need_to_convert']:
-    #     for convert_data in config['convert']['datasets_to_convert']:
-    #         mp3_to_wav(config['languages'], config['datasets'][convert_data]['source_path'])
+    if config['convert']['need_to_convert']:
+        for convert_data in config['convert']['datasets_to_convert']:
+            mp3_to_wav(config['languages'], config['datasets'][convert_data]['source_path'])
 
     for task in config['task']:
-        print(f'{task.title():-^200}')
+        print(f"{'-' * 65}| Processing {task.title()} Data |{'-' * 65}")
         os.makedirs(os.path.join(config['target_dir'], task), exist_ok=True)
 
         for dataset_name in config['datasets_to_process']:
