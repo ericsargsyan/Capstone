@@ -37,12 +37,12 @@ class MozillaCVImporter:
 
     def import_datasets(self, languages):
         for language in languages:
-            print(f'------------------------------------------------------------------------'
-                  f'    Processing {language.upper()} Data    '
-                  f'------------------------------------------------------------------------')
-            self.test_dataset = pd.read_table(os.path.join(self.source_path, language, 'test.tsv'))[['path', 'accents']]
-            self.dev_dataset = pd.read_table(os.path.join(self.source_path, language, 'dev.tsv'))[['path', 'accents']]
-            validated_dataset = pd.read_table(os.path.join(self.source_path, language, 'validated.tsv'))[['path', 'accents']]
+            print(f"{'-' * 70}| Processing {language.upper()} Data |{'-' * 70}")
+            tsv_path = os.path.join(self.source_path, language)
+
+            self.test_dataset = pd.read_table(os.path.join(tsv_path, 'test.tsv'))[['path', 'accents']]
+            self.dev_dataset = pd.read_table(os.path.join(tsv_path, 'dev.tsv'))[['path', 'accents']]
+            validated_dataset = pd.read_table(os.path.join(tsv_path, 'validated.tsv'))[['path', 'accents']]
 
             self.train_dataset = validated_dataset[~validated_dataset.path.isin(self.test_dataset.path)]
             self.train_dataset = self.train_dataset[~self.train_dataset.path.isin(self.dev_dataset.path)]
@@ -60,8 +60,7 @@ class MozillaCVImporter:
         raise NotImplementedError
 
     def process_data(self, audios, split, language):
-        print(f' Processing {split.upper()} Data ')
-
+        print(f"{'-' * 70}| Processing {split.upper()} Data |{'-' * 70}")
         index = 0
 
         for file_name in tqdm(audios['path']):
@@ -106,13 +105,9 @@ class AccentImporter(MozillaCVImporter):
         self.languages = ['en']
 
     def _task_related_processing(self):
-        self.test_dataset = self.test_dataset[self.test_dataset['accents'].isin(self.accents)]
-        self.train_dataset = self.train_dataset[self.train_dataset['accents'].isin(self.accents)]
-        self.dev_dataset = self.dev_dataset[self.dev_dataset['accents'].isin(self.accents)]
-
-        self.train_dataset = self.train_dataset.reset_index()
-        self.test_dataset = self.test_dataset.reset_index()
-        self.dev_dataset = self.dev_dataset.reset_index()
+        self.test_dataset = self.test_dataset[self.test_dataset['accents'].isin(self.accents)].reset_index()
+        self.train_dataset = self.train_dataset[self.train_dataset['accents'].isin(self.accents)].reset_index()
+        self.dev_dataset = self.dev_dataset[self.dev_dataset['accents'].isin(self.accents)].reset_index()
 
     def _get_audio_filepath_label(self, audios, split, file_name, index, language):
         accent = audios.loc[audios['path'] == file_name]['accents'][index]
