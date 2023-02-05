@@ -1,10 +1,11 @@
 import pytorch_lightning as pl
 import torch
 from torch import nn
+from torchmetrics import Accuracy
 
 
 class AudioModel(pl.LightningModule):
-    def __init__(self):
+    def __init__(self, number_of_labels, learning_rate):
         super().__init__()
         self.Net = nn.Sequential(
             nn.Linear(90000, 65536),
@@ -15,12 +16,15 @@ class AudioModel(pl.LightningModule):
             nn.ReLU(),
             nn.Linear(4096, 576),
             nn.ReLU(),
-            nn.Linear(576, 7),
-            nn.ReLU(),
-            nn.Softmax()
+            nn.Linear(576, 7)
+            # nn.Softmax()
         )
+        self.learning_rate = learning_rate
+
         self.loss_fn = nn.CrossEntropyLoss()
-        self.train_accuracy = 
+        self.train_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
+        self.val_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
+        self.test_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
 
     def forward(self, x):
         x = self.Net()
@@ -28,14 +32,48 @@ class AudioModel(pl.LightningModule):
 
     def training_step(self, train_batch, batch_idx):
         x, y = train_batch
-        predict_probs = self(x)
-        prediction = torch.argmax(predict_probs)
-        loss = self.loss_fn(prediction, y)
+        predict = self(x)
+        prediction = torch.argmax(predict)
 
-        batch_accuracy =
+        loss = self.loss_fn(predict, y)
+        batch_accuracy = self.train_accuracy(prediction, y)
 
+        self.log('train_step_accuracy', batch_accuracy, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_step_loss', loss, on_step=True, on_epoch=True, prog_bar=False, logger=True)
 
+        return loss
 
+    def training_epoch_end(self, outputs):
+        train_epoch_acc = self.train_accuracy.compute()
+        self.train_accuracy.reset()
+
+        self.log('train_epoch_accuracy', train_epoch_acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+
+    def validation_step(self, val_batch, batch_idx):
+        x, y = val_batch
+        predict = self(x)
+        prediction = torch.argmax(predict)
+
+        loss = self.loss_fn(predict, y)
+        batch_accuracy = self.val_accuracy(prediction, y)
+
+        self.log('val_step_accuracy', batch_accuracy, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_step_loss', loss, on_step=True, on_epoch=True, prog_bar=False, logger=True)
+
+    def validation_epoch_end(self, outputs):
+        val_epoch_acc = self.val_accuracy.compute()
+        self.val_accuracy.reset()
+
+        self.log('val_epoch_accuracy', val_epoch_acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+
+    def test_step(self, test_batch, batch_idx):
+        pass
+
+    def test_epoch_end(self, outputs):
+        pass
+
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
 
 # class LanguageDetection(pl.LightningModule, AudioModel):
