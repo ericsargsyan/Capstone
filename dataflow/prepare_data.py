@@ -2,7 +2,7 @@ import os
 import argparse
 from dataflow.utils import read_yaml
 from dataflow.utils import mp3_to_wav
-from dataflow.importers.Mozilla import LanguageImporter, AccentImporter
+from dataflow.importers.mozilla import LanguageImporter, AccentImporter
 
 
 def arg_parser():
