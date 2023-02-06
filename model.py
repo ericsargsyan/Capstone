@@ -8,7 +8,7 @@ class AudioModel(pl.LightningModule):
     def __init__(self, number_of_labels, learning_rate):
         super().__init__()
         self.Net = nn.Sequential(
-            nn.Linear(90000, 65536),
+            nn.Linear(80000, 65536),
             nn.ReLU(),
             nn.Linear(65536, 16384),
             nn.ReLU(),
@@ -16,7 +16,7 @@ class AudioModel(pl.LightningModule):
             nn.ReLU(),
             nn.Linear(4096, 576),
             nn.ReLU(),
-            nn.Linear(576, 7)
+            nn.Linear(576, number_of_labels)
             # nn.Softmax()
         )
         self.learning_rate = learning_rate
@@ -73,7 +73,7 @@ class AudioModel(pl.LightningModule):
         pass
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+        return torch.optim.Adam(self.parameters(), lr=1e-2)
 
 
 # class LanguageDetection(pl.LightningModule, AudioModel):
