@@ -22,8 +22,8 @@ if __name__ == "__main__":
     config = read_yaml(parser.config_path)
     dataloader_config = config['dataloader']
 
-    train_path = config['data']['train_path']
-    val_path = config['data']['val_path']
+    train_path = config['data']['language_detection']['train_path']
+    val_path = config['data']['language_detection']['val_path']
 
     train_dataset = LanguageDataset(train_path)
     val_dataset = LanguageDataset(val_path)
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     val_dataloader = DataLoader(val_dataset, batch_size=dataloader_config['batch_size'],
                                              shuffle=False, num_workers=config['dataloader']['num_workers'])
 
-    model = AudioModel(7, config['learning_rate'])
+    model = AudioModel(3, config['learning_rate'])
 
-    trainer = Trainer()
+    trainer = Trainer(max_epochs=5)
     trainer.fit(model, train_dataloader, val_dataloader)
