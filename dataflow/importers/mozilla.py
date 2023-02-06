@@ -90,7 +90,7 @@ class LanguageImporter(MozillaCVImporter):
         pass
 
     def _get_audio_filepath_label(self, audios, split, file_name, index, language):
-        new_audio_filepath = os.path.join(self.target_dir, language, split, f'{file_name[:-3]}{self.file_ending}')
+        new_audio_filepath = os.path.join(self.target_dir, language, split, f'{file_name[:-3]}wav')
         return new_audio_filepath, language
 
     def process_data(self, audios, split, language):
@@ -111,7 +111,7 @@ class AccentImporter(MozillaCVImporter):
 
     def _get_audio_filepath_label(self, audios, split, file_name, index, language):
         accent = audios.loc[audios['path'] == file_name]['accents'][index]
-        new_audio_filepath = os.path.join(self.target_dir, split, f'{file_name[:-3]}{self.file_ending}')
+        new_audio_filepath = os.path.join(self.target_dir, split, f'{file_name[:-3]}wav')
 
         return new_audio_filepath, accent
 
