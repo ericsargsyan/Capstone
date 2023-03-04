@@ -27,6 +27,8 @@ if __name__ == '__main__':
         for convert_data in config['convert']['datasets_to_convert']:
             mp3_to_wav(config['languages'], config['datasets'][convert_data]['source_path'])
 
+    exit()
+
     for task in config['task']:
         print(f"{'-' * 65}| Processing {task.title()} Data |{'-' * 65}")
         os.makedirs(os.path.join(config['target_dir'], task), exist_ok=True)
