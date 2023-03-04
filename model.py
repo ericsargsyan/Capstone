@@ -70,7 +70,10 @@ class AudioModel(pl.LightningModule):
         val_epoch_acc = self.val_accuracy.compute()
         self.val_accuracy.reset()
 
+        loss = sum(outputs)/outputs.count()
+
         self.log('val_epoch_accuracy', val_epoch_acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
     def test_step(self, test_batch, batch_idx):
         pass
