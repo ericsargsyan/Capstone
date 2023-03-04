@@ -1,0 +1,63 @@
+- name: ConvBatchNormRelu
+  params:
+    input_size: 40
+    kernel_size: 33
+    output_size: 256
+
+- name: BBlock
+  params:
+    input_size: 256
+    kernel_size: 33
+    output_size: 256
+    repeat: 2
+
+- name: BBlock
+  params:
+    input_size: 256
+    kernel_size: 39
+    output_size: 256
+    repeat: 2
+
+- name: BBlock
+  params:
+    input_size: 256
+    kernel_size: 51
+    output_size: 512
+    repeat: 2
+
+- name: BBlock
+  params:
+    input_size: 512
+    kernel_size: 63
+    output_size: 512
+    repeat: 2
+
+- name: BBlock
+  params:
+    input_size: 512
+    kernel_size: 75
+    output_size: 512
+    repeat: 2
+
+- name: ConvBatchNormRelu
+  params:
+    input_size: 512
+    kernel_size: 1
+    output_size: 1500
+
+- name: StatsPooling
+  params: {}
+
+- name: Linear
+  params:
+    in_features: 3000
+    out_features: 512
+
+- name: BatchNorm1d
+  params:
+    num_features: 512
+
+- name: Linear
+  params:
+    in_features: 512
+    out_features: 7
