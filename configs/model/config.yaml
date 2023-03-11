@@ -23,3 +23,5 @@ pl_trainer:
 checkpoint_path: None
 
 learning_rate: 10e-1
+
+model_config_path: "./configs/model/net.yaml"
