@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+from torchaudio.transforms import MFCC
 
 
 class TSConv(nn.Module):
@@ -76,3 +77,4 @@ name_to_layer = nn.__dict__
 name_to_layer["StatsPooling"] = StatsPooling
 name_to_layer["ConvBatchNormRelu"] = ConvBatchNormRelu
 name_to_layer["BBlock"] = BBlock
+name_to_layer["MFCC"] = MFCC
