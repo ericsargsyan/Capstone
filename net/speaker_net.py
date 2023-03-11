@@ -1,7 +1,6 @@
 from net.layers import *
 
 
-
 class SpeakerNet(nn.Module):
     def __init__(self, config):
         super().__init__()
