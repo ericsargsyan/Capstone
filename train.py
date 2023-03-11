@@ -20,6 +20,8 @@ def arg_parser():
 if __name__ == "__main__":
     parser = arg_parser()
     config = read_yaml(parser.config_path)
+    model_config = read_yaml(config['model_config_path'])
+
     dataloader_config = config['dataloader']
 
     train_path = config['data']['language_detection']['train_path']
@@ -29,9 +31,9 @@ if __name__ == "__main__":
     val_dataset = LanguageDataset(val_path)
 
     train_dataloader = DataLoader(train_dataset, batch_size=dataloader_config['batch_size'],
-                                                 shuffle=True, num_workers=config['dataloader']['num_workers'])
+                                  shuffle=True, num_workers=config['dataloader']['num_workers'])
     val_dataloader = DataLoader(val_dataset, batch_size=dataloader_config['batch_size'],
-                                             shuffle=False, num_workers=config['dataloader']['num_workers'])
+                                shuffle=False, num_workers=config['dataloader']['num_workers'])
 
     model = AudioModel(7, config['learning_rate'])
 
