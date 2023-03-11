@@ -1,3 +1,9 @@
+- name: MFCC
+  params:
+    sample_rate: 16000
+    n_mfcc: 40
+    dct_type: 2
+
 - name: ConvBatchNormRelu
   params:
     input_size: 40
