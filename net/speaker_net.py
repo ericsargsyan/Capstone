@@ -1,12 +1,11 @@
 from net.layers import *
-from torchaudio.transforms import MFCC
+
 
 
 class SpeakerNet(nn.Module):
     def __init__(self, config):
         super().__init__()
-
-        self.mfcc = MFCC()
+        # self.mfcc = MFCC()
         self.layers = nn.ModuleList()
 
         for layer_info in config:
@@ -15,7 +14,7 @@ class SpeakerNet(nn.Module):
             self.layers.append(current_layer)
 
     def forward(self, x):
-        x = self.mfcc(x)
+        # x = self.mfcc(x)
         for layer in self.layers:
             x = layer(x)
         return x
