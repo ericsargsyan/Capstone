@@ -22,12 +22,6 @@ class TSConv(nn.Module):
             return nn.functional.relu(self.func(x))
         return self.func(x)
 
-# x = torch.randn(165*40, 165*40)
-# conv = nn.Conv1d(10, 8, 2)
-# print(conv(x))
-# model = TSconv(165*40, 3, 165*40)
-# print(model.forward(x).size())
-
 
 class BBlock(nn.Module):
     def __init__(self, input_size, kernel_size, output_size, repeat):
@@ -49,11 +43,6 @@ class BBlock(nn.Module):
 
         x2 = self.batchnorm(self.pointwise(x))
         return self.relu(x1 + x2)
-
-
-# x = torch.rand((165*40, 165*40))
-# model = BBlock(165*40, 3, 165*40, 3)
-# print(model.forward(x))
 
 class ConvBatchNormRelu(nn.Module):
     def __init__(self, input_size, kernel_size, output_size):
