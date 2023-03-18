@@ -35,7 +35,7 @@ if __name__ == "__main__":
     val_dataloader = DataLoader(val_dataset, batch_size=dataloader_config['batch_size'],
                                 shuffle=False, num_workers=config['dataloader']['num_workers'])
 
-    model = AudioModel(7, config['learning_rate'])
+    model = AudioModel(model_config, 7, config['learning_rate'])
 
     trainer = Trainer(**config['pl_trainer'])
     trainer.fit(model, train_dataloader, val_dataloader)
