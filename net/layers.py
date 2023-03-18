@@ -1,6 +1,23 @@
 import torch
 from torch import nn
-from torchaudio.transforms import MFCC
+from torchaudio.transforms import MFCC, MelSpectrogram
+
+
+class NormalizedMelSpectogram(MelSpectrogram):
+
+    def normalize_mel(self, x):
+        x_mean = torch.zeros((x.shape[0], x.shape[1]), dtype=x.dtype, device=x.device)
+        x_std = torch.zeros((x.shape[0], x.shape[1]), dtype=x.dtype, device=x.device)
+        for i in range(x.shape[0]):
+            x_mean[i, :] = x[i, :, :].mean(dim=1)
+            x_std[i, :] = x[i, :, :].std(dim=1)
+        # make sure x_std is not zero
+        x_std += 0.00001
+        return (x - x_mean.unsqueeze(2)) / x_std.unsqueeze(2)
+
+    def forward(self, x):
+        x = super().forward(x)
+        return self.normalize_mel(x)
 
 
 class TSConv(nn.Module):
@@ -66,4 +83,5 @@ name_to_layer = nn.__dict__
 name_to_layer["StatsPooling"] = StatsPooling
 name_to_layer["ConvBatchNormRelu"] = ConvBatchNormRelu
 name_to_layer["BBlock"] = BBlock
-name_to_layer["MFCC"] = MFCC
+name_to_layer["NormalizedMelSpectogram"] = NormalizedMelSpectogram
+# name_to_layer["MFCC"] = MFCC
