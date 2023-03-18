@@ -3,29 +3,20 @@ import torch
 from torch import nn
 from torchmetrics import Accuracy
 from net.speaker_net import SpeakerNet
+from net.layers import NormalizedMelSpectogram
 
 
 class AudioModel(pl.LightningModule):
-    def __init__(self, model_config, number_of_labels, learning_rate):
+    def __init__(self, model_config, processor_config, sr, number_of_labels, learning_rate):
         super().__init__()
-        # from dataflow.utils import read_yaml
-        # from net.speaker_net import SpeakerNet
-        # config_path = "/home/capstone/Desktop/Krisp/Capstone/configs/model/net.yaml"
-        # config = read_yaml(config_path)
-        self.net = SpeakerNet(model_config)
 
-        # self.Net = nn.Sequential(
-        #     nn.Linear(80000, 12),
-        #     # nn.ReLU(),
-        #     # nn.Linear(256, 256),
-        #     # nn.ReLU(),
-        #     # nn.Linear(256, 256),
-        #     # nn.ReLU(),
-        #     # nn.Linear(256, 256),
-        #     nn.ReLU(),
-        #     nn.Linear(12, number_of_labels)
-        #     # nn.Softmax()
-        # )
+        self.net = SpeakerNet(model_config)
+        win_length = int(processor_config.pop('win_length') * sr)
+        hop_length = int(processor_config.pop('hop_length') * sr)
+        self.audio_processor = NormalizedMelSpectogram(win_length=win_length,
+                                                       hop_length=hop_length,
+                                                       window_fn=torch.hann_window,
+                                                       **processor_config)
         self.learning_rate = learning_rate
 
         self.loss_fn = nn.CrossEntropyLoss()
@@ -33,7 +24,9 @@ class AudioModel(pl.LightningModule):
         self.val_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
         self.test_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
 
+
     def forward(self, x):
+        x = self.audio_processor(x)
         x = self.net(x)
         return x
 
