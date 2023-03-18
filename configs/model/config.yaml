@@ -1,3 +1,4 @@
+sr: 16000
 data:
   language_detection:
     train_path: /media/capstone/HDD3/data/language_detection/labels/TRAIN_mozilla.csv
@@ -20,9 +21,16 @@ pl_trainer:
   max_epochs: 500
   devices: 1
   accelerator: "gpu"
+  accumulate_grad_batches: 3
 
 checkpoint_path: None
 
 learning_rate: 10e-1
 
 model_config_path: "./configs/model/net.yaml"
+
+audio_processor:
+    n_mels: 80
+    n_fft: 512
+    win_length: 0.025
+    hop_length: 0.01
