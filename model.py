@@ -2,29 +2,30 @@ import pytorch_lightning as pl
 import torch
 from torch import nn
 from torchmetrics import Accuracy
+from net.speaker_net import SpeakerNet
 
 
 class AudioModel(pl.LightningModule):
-    def __init__(self, number_of_labels, learning_rate):
+    def __init__(self, model_config, number_of_labels, learning_rate):
         super().__init__()
         # from dataflow.utils import read_yaml
         # from net.speaker_net import SpeakerNet
         # config_path = "/home/capstone/Desktop/Krisp/Capstone/configs/model/net.yaml"
         # config = read_yaml(config_path)
-        # self.Net = SpeakerNet(config)
+        self.net = SpeakerNet(model_config)
 
-        self.Net = nn.Sequential(
-            nn.Linear(80000, 12),
-            # nn.ReLU(),
-            # nn.Linear(256, 256),
-            # nn.ReLU(),
-            # nn.Linear(256, 256),
-            # nn.ReLU(),
-            # nn.Linear(256, 256),
-            nn.ReLU(),
-            nn.Linear(12, number_of_labels)
-            # nn.Softmax()
-        )
+        # self.Net = nn.Sequential(
+        #     nn.Linear(80000, 12),
+        #     # nn.ReLU(),
+        #     # nn.Linear(256, 256),
+        #     # nn.ReLU(),
+        #     # nn.Linear(256, 256),
+        #     # nn.ReLU(),
+        #     # nn.Linear(256, 256),
+        #     nn.ReLU(),
+        #     nn.Linear(12, number_of_labels)
+        #     # nn.Softmax()
+        # )
         self.learning_rate = learning_rate
 
         self.loss_fn = nn.CrossEntropyLoss()
@@ -33,7 +34,7 @@ class AudioModel(pl.LightningModule):
         self.test_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
 
     def forward(self, x):
-        x = self.Net(x)
+        x = self.net(x)
         return x
 
     def training_step(self, train_batch, batch_idx):
@@ -72,7 +73,7 @@ class AudioModel(pl.LightningModule):
         val_epoch_acc = self.val_accuracy.compute()
         self.val_accuracy.reset()
 
-        loss = sum(outputs)/len(outputs)
+        loss = sum(outputs) / len(outputs)
 
         self.log('val_epoch_accuracy', val_epoch_acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('val_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
@@ -85,7 +86,6 @@ class AudioModel(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=1e-2)
-
 
 # class LanguageDetection(pl.LightningModule, AudioModel):
 #     def __init__(self):
