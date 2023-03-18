@@ -1,6 +1,23 @@
 import torch
 from torch import nn
-from torchaudio.transforms import MFCC
+from torchaudio.transforms import MFCC, MelSpectrogram
+
+
+class NormalizedMelSpectogram(MelSpectrogram):
+
+    def normalize_mel(self, x):
+        x_mean = torch.zeros((x.shape[0], x.shape[1]), dtype=x.dtype, device=x.device)
+        x_std = torch.zeros((x.shape[0], x.shape[1]), dtype=x.dtype, device=x.device)
+        for i in range(x.shape[0]):
+            x_mean[i, :] = x[i, :, :].mean(dim=1)
+            x_std[i, :] = x[i, :, :].std(dim=1)
+        # make sure x_std is not zero
+        x_std += 0.00001
+        return (x - x_mean.unsqueeze(2)) / x_std.unsqueeze(2)
+
+    def forward(self, x):
+        x = super().forward(x)
+        return self.normalize_mel(x)
 
 
 class TSConv(nn.Module):
@@ -21,12 +38,6 @@ class TSConv(nn.Module):
         if self.do_relu:
             return nn.functional.relu(self.func(x))
         return self.func(x)
-
-# x = torch.randn(165*40, 165*40)
-# conv = nn.Conv1d(10, 8, 2)
-# print(conv(x))
-# model = TSconv(165*40, 3, 165*40)
-# print(model.forward(x).size())
 
 
 class BBlock(nn.Module):
@@ -50,11 +61,6 @@ class BBlock(nn.Module):
         x2 = self.batchnorm(self.pointwise(x))
         return self.relu(x1 + x2)
 
-
-# x = torch.rand((165*40, 165*40))
-# model = BBlock(165*40, 3, 165*40, 3)
-# print(model.forward(x))
-
 class ConvBatchNormRelu(nn.Module):
     def __init__(self, input_size, kernel_size, output_size):
         super().__init__()
@@ -77,4 +83,5 @@ name_to_layer = nn.__dict__
 name_to_layer["StatsPooling"] = StatsPooling
 name_to_layer["ConvBatchNormRelu"] = ConvBatchNormRelu
 name_to_layer["BBlock"] = BBlock
-name_to_layer["MFCC"] = MFCC
+name_to_layer["NormalizedMelSpectogram"] = NormalizedMelSpectogram
+# name_to_layer["MFCC"] = MFCC
