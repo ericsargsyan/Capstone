@@ -1,4 +1,5 @@
 sr: 16000
+task: language_detection
 data:
   language_detection:
     train_path: /media/capstone/HDD3/data/language_detection/labels/TRAIN_mozilla.csv
