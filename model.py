@@ -24,7 +24,6 @@ class AudioModel(pl.LightningModule):
         self.val_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
         self.test_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
 
-
     def forward(self, x):
         x = self.audio_processor(x)
         x = self.net(x)
@@ -79,13 +78,3 @@ class AudioModel(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=1e-2)
-
-# class LanguageDetection(pl.LightningModule, AudioModel):
-#     def __init__(self):
-#         super.__init__()
-#         pass
-#
-#
-# class AccentDetection(AudioModel):
-#     def __init__(self):
-#         pass
