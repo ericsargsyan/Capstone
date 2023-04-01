@@ -2,7 +2,6 @@ from torch.utils.data import Dataset
 import pandas as pd
 import torchaudio
 import torch
-import os
 
 
 class AccentDataset(Dataset):
