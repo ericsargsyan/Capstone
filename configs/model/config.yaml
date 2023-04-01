@@ -21,14 +21,13 @@ dataloader:
 pl_trainer:
   max_epochs: 500
   devices: 1
-  accelerator: "gpu"
-  accumulate_grad_batches: 3
+  accelerator: gpu
 
 checkpoint_path: None
 
-learning_rate: 10e-1
+learning_rate: 0.001
 
-model_config_path: "./configs/model/net.yaml"
+model_config_path: ./configs/model/net.yaml
 
 audio_processor:
     n_mels: 80
