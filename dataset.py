@@ -3,35 +3,35 @@ import pandas as pd
 import torchaudio
 import torch
 import os
-from sklearn.preprocessing import LabelEncoder
 
 
 class AccentDataset(Dataset):
-    def __init__(self, paths):
+    def __init__(self, paths, label):
         self.data = pd.concat((pd.read_csv(data) for data in paths), ignore_index=True)
-
+        self.labels = pd.DataFrame.from_dict(label, orient='index', columns=['label'])
+        self.data = pd.merge(self.data, self.labels, left_on='accent', right_index=True)
 
     def __getitem__(self, idx):
-        pass
+        waveform, _ = torchaudio.load(self.data['path'][idx])
+        x = waveform.view(-1)
+        y = torch.tensor(self.data['label'], dtype=torch.long)
 
     def __len__(self):
         return len(self.data)
 
 
 class LanguageDataset(Dataset):
-    def __init__(self, path):
+    def __init__(self, path, label):
         self.data = pd.read_csv(path)
-        self.data['language'] = self.data['language'].astype('category')
-        self.data['encoded_language'] = self.data['language'].cat.codes
-        dummy_data = self.data[['language', 'encoded_language']].drop_duplicates().reset_index(drop=True)
-        dummy_data.to_csv(os.path.join(os.getcwd(), 'encoded_labels.csv'))
+        self.labels = pd.DataFrame.from_dict(label, orient='index', columns=['label'])
+        self.data = pd.merge(self.data, self.labels, left_on='language', right_index=True)
 
     def __getitem__(self, idx):
         waveform, _ = torchaudio.load(self.data['path'][idx])
         x = waveform.view(-1)
-        y = torch.tensor(self.data['encoded_language'], dtype=torch.long)
+        y = torch.tensor(self.data['label'], dtype=torch.long)
 
-        return x, y[idx]#.unsqueeze(-1)
+        return x, y[idx]
 
     def __len__(self):
         return len(self.data)
