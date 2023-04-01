@@ -9,7 +9,6 @@ from net.layers import NormalizedMelSpectogram
 class AudioModel(pl.LightningModule):
     def __init__(self, model_config, processor_config, sr, number_of_labels, learning_rate):
         super().__init__()
-
         self.net = SpeakerNet(model_config)
         win_length = int(processor_config.pop('win_length') * sr)
         hop_length = int(processor_config.pop('hop_length') * sr)
@@ -74,7 +73,13 @@ class AudioModel(pl.LightningModule):
         pass
 
     def test_epoch_end(self, outputs):
-        pass
+        test_epoch_acc = self.test_accuracy.compute()
+        self.test_accuracy.reset()
+
+        loss = sum(outputs) / len(outputs)
+
+        self.log('test_epoch_accuracy', test_epoch_acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('test_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=1e-2)
