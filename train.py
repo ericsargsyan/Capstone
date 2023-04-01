@@ -28,8 +28,8 @@ if __name__ == "__main__":
     train_path = config['data']['language_detection']['train_path']
     val_path = config['data']['language_detection']['val_path']
 
-    train_dataset = LanguageDataset(train_path)
-    val_dataset = LanguageDataset(val_path)
+    train_dataset = LanguageDataset(train_path, '???')
+    val_dataset = LanguageDataset(val_path, '???')
 
     train_dataloader = DataLoader(train_dataset, batch_size=dataloader_config['batch_size'],
                                   shuffle=True, num_workers=config['dataloader']['num_workers'])
@@ -49,5 +49,4 @@ if __name__ == "__main__":
                                           monitor='val_epoch_accuracy')
 
     trainer = Trainer(callbacks=[checkpoint_callback], logger=logger, **config['pl_trainer'])
-    # trainer = Trainer(**config['pl_trainer'])
     trainer.fit(model, train_dataloader, val_dataloader)
