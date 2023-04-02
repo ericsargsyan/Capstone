@@ -6,16 +6,16 @@ datasets:
   MozillaCV:
     source_path: /media/capstone/HDD3/source_data/MozillaCV
   Musan:
-    source_path: /Users/gorpiliposyan/Desktop/Krisp/source_data/Other/musan
+    source_path: /media/capstone/HDD3/source_data/musan
   datasets_to_process: [Musan]
 
-datasets_to_process: [MozillaCV]
+datasets_to_process: [Musan]
 
 # language_detection, accent_detection
 task: language_detection
 
-# en, es, de, fr, be, ca
-languages: [en, es, de, fr, be, ca]
+# en, es, de, fr, be, ca, el, it, pt, ru, hy-AM
+languages: [el, it, pt, ru, hy-AM]
 
 accents: [en, indian]
 
@@ -23,5 +23,3 @@ convert:
   need_to_convert: True
   datasets_to_convert: [MozillaCV]
   wav: True
-
-encoded_config_path: ./configs/model/net.yaml
