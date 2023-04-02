@@ -5,14 +5,17 @@ from torchaudio.transforms import MFCC, MelSpectrogram
 
 class NormalizedMelSpectogram(MelSpectrogram):
 
-    def normalize_mel(self, x):
+    @staticmethod
+    def normalize_mel(x):
         x_mean = torch.zeros((x.shape[0], x.shape[1]), dtype=x.dtype, device=x.device)
         x_std = torch.zeros((x.shape[0], x.shape[1]), dtype=x.dtype, device=x.device)
+
         for i in range(x.shape[0]):
             x_mean[i, :] = x[i, :, :].mean(dim=1)
             x_std[i, :] = x[i, :, :].std(dim=1)
         # make sure x_std is not zero
         x_std += 0.00001
+
         return (x - x_mean.unsqueeze(2)) / x_std.unsqueeze(2)
 
     def forward(self, x):
@@ -60,6 +63,7 @@ class BBlock(nn.Module):
 
         x2 = self.batchnorm(self.pointwise(x))
         return self.relu(x1 + x2)
+
 
 class ConvBatchNormRelu(nn.Module):
     def __init__(self, input_size, kernel_size, output_size):
