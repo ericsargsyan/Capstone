@@ -2,13 +2,13 @@ sr: 16000
 task: language_detection
 data:
   language_detection:
-    train_path: /media/capstone/HDD3/data/language_detection/labels/TRAIN_mozilla.csv
-    val_path: /media/capstone/HDD3/data/language_detection/labels/DEV_mozilla.csv
-    test_path: /media/capstone/HDD3/data/language_detection/labels/TEST_mozilla.csv
+    train_path: [/media/capstone/HDD3/data/labels/TRAIN_mozilla_filtered.csv]
+    val_path: [/media/capstone/HDD3/data/labels/DEV_mozilla.csv]
+    test_path: [/media/capstone/HDD3/data/labels/TEST_mozilla_filtered.csv]
   accent_detection:
-    train_path: [/media/capstone/HDD3/data/accent_detection/labels/TRAIN_mozilla.csv]
-    val_path: [/media/capstone/HDD3/data/accent_detection/labels/VAL_mozilla.csv]
-    test_path: [/media/capstone/HDD3/data/accent_detection/labels/TEST_mozilla.csv]
+    train_path: [/media/capstone/HDD3/data/labels/TRAIN_mozilla.csv]
+    val_path: [/media/capstone/HDD3/data/labels/VAL_mozilla.csv]
+    test_path: [/media/capstone/HDD3/data/labels/TEST_mozilla.csv]
 
 log_dir:
   language_detection: /home/capstone/Desktop/Krisp/Capstone/language_logs
@@ -34,3 +34,18 @@ audio_processor:
     n_fft: 512
     win_length: 0.025
     hop_length: 0.01
+
+encodings:
+  language_detection:
+    en: 0 # english
+    fr: 1 # french
+    de: 2 # german
+    es: 3 # spanish
+    ca: 4 # catalan
+    be: 5 # belarusian
+    it: 6 # italian
+    hy-AM: 6 # armenian
+    ru: 6 # russia
+  accent_detection:
+    usa: 0
+    british: 1
