@@ -60,4 +60,4 @@
 - name: Linear
   params:
     in_features: 512
-    out_features: 7
+    out_features: None
