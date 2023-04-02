@@ -45,7 +45,7 @@ def mp3_to_wav(languages, path):
             output_path = os.path.join(path, language, 'wav_clips', out_path)
             command = f'ffmpeg -y -hwaccel cuda -i {audio_to_convert} -acodec pcm_s16le -ac 1 -ar 16000 {output_path}wav'
             os.system(command)
-            os.system(f'rm -r {audio_to_convert}')
+            # os.system(f'rm -r {audio_to_convert}')
 
         os.system(f'mv {os.path.join(partial_path, "clips")} {os.path.join(partial_path, "old_clips")}')
         os.system(f'mv {os.path.join(partial_path, "wav_clips")} {os.path.join(partial_path, "clips")}')
