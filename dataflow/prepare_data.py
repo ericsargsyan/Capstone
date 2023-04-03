@@ -4,7 +4,8 @@ from dataflow.utils import read_yaml
 from dataflow.utils import mp3_to_wav
 from dataflow.importers.mozilla import LanguageImporter, AccentImporter
 from dataflow.importers.musan import MusanImporter
-
+from dataflow.importers.accentdb import AccentDBImporter
+from dataflow.importers.nptel import NptelImporter
 
 def arg_parser():
     parser = argparse.ArgumentParser()
@@ -19,7 +20,9 @@ name_to_class = {'language_detection':
                              'Musan': MusanImporter},
                  'accent_detection':
                             {'MozillaCV': AccentImporter,
-                             'Musan': MusanImporter}
+                             'Musan': MusanImporter,
+                             'AccentDB': AccentDBImporter,
+                             'Nptel': NptelImporter}
                  }
 
 if __name__ == '__main__':
