@@ -6,6 +6,7 @@ import soundfile as sf
 from tqdm import tqdm
 from dataflow.utils import format_audio
 
+
 class NptelImporter:
     def __init__(self, config):
         self.source_path = config['datasets']['Nptel']['source_path']
@@ -22,7 +23,6 @@ class NptelImporter:
                 with open(os.path.join(self.csv_path, f'{split}_nptel.csv'), 'w') as file:
                     header = csv.writer(file)
                     header.writerow(['index', 'path', 'label'])
-
 
     def import_dataset(self):
         arr = np.array([])
