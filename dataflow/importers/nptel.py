@@ -25,14 +25,16 @@ class NptelImporter:
                     header.writerow(['index', 'path', 'label'])
 
     def import_dataset(self):
+        print(f"{'-' * 70}| Processing NPTEL Data |{'-' * 70}")
+
         arr = np.array([])
-        for audio in glob(os.path.join(self.source_path, '*','*.wav')):
+        for audio in glob(os.path.join(self.source_path, '*', '*.wav')):
             arr = np.append(arr, audio)
 
-        np.random.seed(5)
-        train = np.random.choice(arr, int(len(arr)*0.8), replace=False)
+        np.random.seed(12)
+        train = np.random.choice(arr, int(len(arr) * 0.8), replace=False)
         arr1 = np.setdiff1d(arr, train)
-        test = np.random.choice(arr1, int(len(arr1)*0.6), replace=False)
+        test = np.random.choice(arr1, int(len(arr1) * 0.6), replace=False)
         valid = np.array([i for i in arr1 if i not in test])
 
         self.process_data(train, 'Train')
