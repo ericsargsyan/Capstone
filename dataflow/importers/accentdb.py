@@ -25,6 +25,7 @@ class AccentDBImporter:
                     header.writerow(['index', 'path', 'label'])
 
     def import_dataset(self):
+        print(f"{'-' * 70}| Processing AccentDB Data |{'-' * 70}")
 
         train_audios = np.array([])
         val_audios = np.array([])
