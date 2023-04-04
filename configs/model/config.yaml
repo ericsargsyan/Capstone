@@ -46,6 +46,9 @@ encodings:
     it: 6 # italian
     hy-AM: 6 # armenian
     ru: 6 # russia
+    el: 6 # greek
+    pt: 6 # portuguese
   accent_detection:
     usa: 0
     british: 1
+    indian: 2
