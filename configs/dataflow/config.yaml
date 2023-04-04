@@ -4,22 +4,25 @@ target_dir: /media/capstone/HDD3/data
 
 datasets:
   MozillaCV:
-    source_path: /media/capstone/HDD3/source_data/MozillaCV
+    source_path: /media/capstone/HDD2/source_data/MozillaCV
   Musan:
     source_path: /media/capstone/HDD3/source_data/musan
-  datasets_to_process: [Musan]
+  AccentDB:
+    source_path: /media/capstone/HDD2/source_data/AccentDB
+  Nptel:
+    source_path: /media/capstone/HDD2/source_data/NPTEL
 
-datasets_to_process: [Musan]
+datasets_to_process: [MozillaCV]
 
 # language_detection, accent_detection
 task: language_detection
 
 # en, es, de, fr, be, ca, el, it, pt, ru, hy-AM
-languages: [el, it, pt, ru, hy-AM]
+languages: [ca]
 
 accents: [en, indian]
 
 convert:
-  need_to_convert: True
+  need_to_convert: False
   datasets_to_convert: [MozillaCV]
   wav: True
