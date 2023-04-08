@@ -13,9 +13,9 @@ Language
 
 
 Accent
-1. Extract European data
-2. Extract NPTEL data
-3. Add importer for European
-4. Add importer for NPTEL
-5. Turn on training
-6. Add Common Voice Accents
+1. Extract European data +
+2. Extract NPTEL data +
+3. Add importer for European -
+4. Add importer for NPTEL +
+5. Turn on training -
+6. Add Common Voice Accents -
