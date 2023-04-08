@@ -14,11 +14,12 @@ def read_yaml(path):
 
 
 def format_audio(current_path, self_samplerate, self_duration, resample):
+    data, samplerate = sf.read(current_path)
+    if len(data.shape) > 1:
+        data = data.mean(axis=1)
+    resample = (samplerate != self_samplerate)
     if resample:
-        data_raw, samplerate = sf.read(current_path)
-        data = librosa.resample(data_raw, target_sr=self_samplerate, orig_sr=samplerate)
-    else:
-        data, samplerate = sf.read(current_path)
+        data = librosa.resample(data, target_sr=self_samplerate, orig_sr=samplerate)
 
     duration = data.shape[0] / self_samplerate
 
@@ -49,3 +50,12 @@ def mp3_to_wav(languages, path):
 
         os.system(f'mv {os.path.join(partial_path, "clips")} {os.path.join(partial_path, "old_clips")}')
         os.system(f'mv {os.path.join(partial_path, "wav_clips")} {os.path.join(partial_path, "clips")}')
+
+
+def data_spliter(arr, split_size):
+    indexes = np.arange(len(arr))
+    np.random.shuffle(indexes)
+    train_indexes = indexes[:int(split_size*len(arr))]
+    test_indexes = indexes[int(split_size*len(arr)):]
+    return arr[train_indexes], arr[test_indexes]
+
