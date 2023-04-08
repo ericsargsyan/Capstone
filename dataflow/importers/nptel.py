@@ -4,7 +4,7 @@ import numpy as np
 from glob import glob
 import soundfile as sf
 from tqdm import tqdm
-from dataflow.utils import format_audio
+from dataflow.utils import format_audio, data_spliter
 
 
 class NptelImporter:
@@ -26,16 +26,13 @@ class NptelImporter:
 
     def import_dataset(self):
         print(f"{'-' * 70}| Processing NPTEL Data |{'-' * 70}")
-
-        arr = np.array([])
-        for audio in glob(os.path.join(self.source_path, '*', '*.wav')):
-            arr = np.append(arr, audio)
-
+        arr = []
+        for audio in tqdm(glob(os.path.join(self.source_path, 'nptel-test', 'wav', '*.wav'))):
+            arr.append(audio)
+        arr = np.array(arr)
         np.random.seed(12)
-        train = np.random.choice(arr, int(len(arr) * 0.8), replace=False)
-        arr1 = np.setdiff1d(arr, train)
-        test = np.random.choice(arr1, int(len(arr1) * 0.6), replace=False)
-        valid = np.array([i for i in arr1 if i not in test])
+        train, test = data_spliter(arr, 0.8)
+        test, valid = data_spliter(test, 0.6)
 
         self.process_data(train, 'Train')
         self.process_data(test, 'Test')
@@ -44,10 +41,15 @@ class NptelImporter:
     def process_data(self, audios, split):
         print(f"{'-' * 70}| Processing {split.upper()} Data |{'-' * 70}")
         index = 0
+        crashed_files = 0
         os.makedirs(os.path.join(self.target_dir, split), exist_ok=True)
 
         for file_name in tqdm(audios):
-            data = format_audio(file_name, self.samplerate, self.duration, False)
+            try:
+                data = format_audio(file_name, self.samplerate, self.duration, False)
+            except sf.LibsndfileError:
+                crashed_files += 1
+                continue
             new_audio_filepath = os.path.join(self.target_dir, split, file_name.split(os.sep)[-1])
             sf.write(new_audio_filepath, data, self.samplerate)
             labels_path = os.path.join(self.csv_path, f'{split}_nptel.csv')
@@ -57,3 +59,4 @@ class NptelImporter:
                 csvwriter.writerow([index, new_audio_filepath, 'indian'])
 
             index += 1
+        print(f"There are {crashed_files} crashed files in {split}")
