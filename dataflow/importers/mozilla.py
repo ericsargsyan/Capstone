@@ -49,9 +49,9 @@ class MozillaCVImporter:
 
             self._task_related_processing()
 
-            self.process_data(self.test_dataset, 'TEST', language)
-            self.process_data(self.dev_dataset, 'DEV', language)
-            self.process_data(self.train_dataset, 'TRAIN', language)
+            self.process_data(self.train_dataset, 'Train', language)
+            self.process_data(self.test_dataset, 'Test', language)
+            self.process_data(self.dev_dataset, 'Dev', language)
 
     def _get_audio_filepath_label(self, audios, split, file_name, index, language):
         raise NotImplementedError
@@ -101,13 +101,13 @@ class LanguageImporter(MozillaCVImporter):
 class AccentImporter(MozillaCVImporter):
     def __init__(self, config):
         super().__init__(config, 'accent_detection')
-        self.accents = config['accents']
+        # self.accents = config['accents']
         self.languages = ['en']
 
     def _task_related_processing(self):
-        self.test_dataset = self.test_dataset[self.test_dataset['accents'].isin(self.accents)].reset_index()
-        self.train_dataset = self.train_dataset[self.train_dataset['accents'].isin(self.accents)].reset_index()
-        self.dev_dataset = self.dev_dataset[self.dev_dataset['accents'].isin(self.accents)].reset_index()
+        self.test_dataset = self.test_dataset[self.test_dataset['accents'].notnull()].reset_index()
+        self.train_dataset = self.train_dataset[self.train_dataset['accents'].notnull()].reset_index()
+        self.dev_dataset = self.dev_dataset[self.dev_dataset['accents'].notnull()].reset_index()
 
     def _get_audio_filepath_label(self, audios, split, file_name, index, language):
         accent = audios.loc[audios['path'] == file_name]['accents'][index]
