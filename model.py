@@ -30,8 +30,6 @@ class AudioModel(pl.LightningModule):
 
     def training_step(self, train_batch, batch_idx):
         x, y = train_batch
-        # print("x", x.device)
-        # print("y", y.device)
         predict = self(x)
         prediction = torch.argmax(predict, dim=1)
 
@@ -46,6 +44,13 @@ class AudioModel(pl.LightningModule):
     def training_epoch_end(self, outputs):
         train_epoch_acc = self.train_accuracy.compute()
         self.train_accuracy.reset()
+
+        loss = sum(outputs) / len(outputs)
+
+        self.log('val_step_accuracy', train_epoch_acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_step_loss', loss, on_step=True, on_epoch=True, prog_bar=False, logger=True)
+
+        return loss
 
     def validation_step(self, val_batch, batch_idx):
         x, y = val_batch
