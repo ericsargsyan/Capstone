@@ -26,6 +26,7 @@ class AudioModel(pl.LightningModule):
     def forward(self, x):
         x = self.audio_processor(x)
         x = self.net(x)
+
         return x
 
     def training_step(self, train_batch, batch_idx):
@@ -47,8 +48,8 @@ class AudioModel(pl.LightningModule):
 
         loss = sum(outputs) / len(outputs)
 
-        self.log('val_step_accuracy', train_epoch_acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('val_step_loss', loss, on_step=True, on_epoch=True, prog_bar=False, logger=True)
+        self.log('train_step_accuracy', train_epoch_acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_step_loss', loss, on_step=True, on_epoch=True, prog_bar=False, logger=True)
 
         return loss
 
@@ -87,4 +88,4 @@ class AudioModel(pl.LightningModule):
         self.log('test_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=1e-2)
+        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
