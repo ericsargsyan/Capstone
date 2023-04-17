@@ -1,6 +1,6 @@
 samplerate: 16000
 duration: 5
-target_dir: /media/capstone/HDD3/data
+target_dir: /home/capstone/Desktop/HDD3/data
 
 datasets:
   MozillaCV:
@@ -17,8 +17,8 @@ datasets_to_process: [MozillaCV]
 # language_detection, accent_detection
 task: language_detection
 
-# en, es, de, fr, be, ca, el, it, pt, ru, hy-AM
-languages: [ca]
+# en, es, de, fr, be, ca, el, it, hy-AM
+languages: [hy-AM]
 
 accents: [en, indian]
 
