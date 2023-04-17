@@ -1,21 +1,20 @@
 General
-1. Add test.py +?
-2. Add infer.py +?
+1. Add test.py -
+2. Add infer.py -
 3. Add language/accent mappings to config +
-4. Get network last layer shape from mapping +?
+4. Get network last layer shape from mapping +
 5. Add importer for noise data +
 6. Add telegram bot
-
+7. Csv, directories +
 
 Language
-1. Add some other languages data
-2. Turn on training
+1. Add some other languages data +
+2. Turn on training +
 
 
 Accent
 1. Extract European data +
 2. Extract NPTEL data +
-3. Add importer for European -
 4. Add importer for NPTEL +
-5. Turn on training -
-6. Add Common Voice Accents -
+5. Turn on training +
+6. Add Common Voice Accents +
