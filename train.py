@@ -36,7 +36,6 @@ if __name__ == "__main__":
     val_dataloader = DataLoader(val_dataset, batch_size=dataloader_config['batch_size'],
                                 shuffle=False, num_workers=config['dataloader']['num_workers'])
 
-    print(config['encodings'][task])
     model = AudioModel(model_config,
                        config['audio_processor'],
                        config['sr'],
