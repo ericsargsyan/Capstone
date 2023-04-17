@@ -1,14 +1,31 @@
 sr: 16000
+# language_detection, accent_detection
 task: language_detection
 data:
   language_detection:
-    train_path: [/media/capstone/HDD3/data/labels/TRAIN_mozilla_filtered.csv]
-    val_path: [/media/capstone/HDD3/data/labels/DEV_mozilla.csv]
-    test_path: [/media/capstone/HDD3/data/labels/TEST_mozilla_filtered.csv]
+    train_path: [/media/capstone/HDD2/data/labels/Train_mozilla.csv]
+    val_path: [/media/capstone/HDD2/data/labels/Dev_mozilla.csv]
+    test_path: [/media/capstone/HDD2/data/labels/Test_mozilla.csv]
+
   accent_detection:
-    train_path: [/media/capstone/HDD3/data/labels/TRAIN_mozilla.csv]
-    val_path: [/media/capstone/HDD3/data/labels/VAL_mozilla.csv]
-    test_path: [/media/capstone/HDD3/data/labels/TEST_mozilla.csv]
+    train_path: [
+                  /media/capstone/HDD2/data/labels/Train_mozilla.csv,
+                 /media/capstone/HDD2/data/labels/Train_accentdb.csv,
+                /media/capstone/HDD2/data/labels/Train_nptel.csv,
+               /media/capstone/HDD2/data/labels/Train_musan.csv
+    ]
+    val_path: [
+                /media/capstone/HDD2/data/labels/Dev_mozilla.csv,
+               /media/capstone/HDD2/data/labels/Dev_accentdb.csv,
+              /media/capstone/HDD2/data/labels/Dev_nptel.csv,
+             /media/capstone/HDD2/data/labels/Dev_musan.csv
+    ]
+    test_path: [
+                /media/capstone/HDD2/data/labels/Test_mozilla.csv,
+               /media/capstone/HDD2/data/labels/Test_accentdb.csv,
+              /media/capstone/HDD2/data/labels/Test_nptel.csv,
+             /media/capstone/HDD2/data/labels/Test_musan.csv
+    ]
 
 log_dir:
   language_detection: /home/capstone/Desktop/Krisp/Capstone/language_logs
@@ -22,6 +39,9 @@ pl_trainer:
   max_epochs: 500
   devices: 1
   accelerator: gpu
+#  limit_train_batches: 20
+  val_check_interval: 0.1
+#  limit_train_batches: 10
 
 checkpoint_path: None
 
@@ -43,12 +63,27 @@ encodings:
     es: 3 # spanish
     ca: 4 # catalan
     be: 5 # belarusian
+
+    # other labels
     it: 6 # italian
-    hy-AM: 6 # armenian
-    ru: 6 # russia
     el: 6 # greek
-    pt: 6 # portuguese
+    hy-AM: 6 # armenian
+    Other: 7 # Noise
+
   accent_detection:
-    usa: 0
+    # Mozilla
+    United States English: 0
+    England English: 1
+    India and South Asia (India, Pakistan, Sri Lanka): 2
+    Canadian English: 3
+    Australian English: 4
+    German English,Non native speaker: 5
+
+    # accentdb
+    american: 0
     british: 1
     indian: 2
+    australian: 4
+
+    Other: 6
+#    indian: 2
