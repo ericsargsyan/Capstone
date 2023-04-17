@@ -25,8 +25,8 @@ if __name__ == "__main__":
     model_config = read_yaml(config['model_config_path'])
 
     dataloader_config = config['dataloader']
-    train_path = config['data']['language_detection']['train_path']
-    val_path = config['data']['language_detection']['val_path']
+    train_path = config['data'][task]['train_path']
+    val_path = config['data'][task]['val_path']
 
     train_dataset = AudioDataset(train_path, config['encodings'][task], task)
     val_dataset = AudioDataset(val_path, config['encodings'][task], task)
@@ -36,10 +36,11 @@ if __name__ == "__main__":
     val_dataloader = DataLoader(val_dataset, batch_size=dataloader_config['batch_size'],
                                 shuffle=False, num_workers=config['dataloader']['num_workers'])
 
+    print(config['encodings'][task])
     model = AudioModel(model_config,
                        config['audio_processor'],
                        config['sr'],
-                       max(config['encodings'][task] + 1),
+                       max(config['encodings'][task].values()) + 1,
                        config['learning_rate'])
 
     log_dir_path = config['log_dir'][task]
