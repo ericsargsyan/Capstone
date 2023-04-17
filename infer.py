@@ -18,6 +18,9 @@ def arg_parser():
     parser.add_argument('--model_config_path',
                         type=str,
                         required=True)
+    # parser.add_argument('--check_path',
+    #                     type=str,
+    #                     required=True)
     parser.add_argument('--audios_dir',
                         type=str,
                         # nargs='+',
@@ -26,7 +29,12 @@ def arg_parser():
 
 
 def detect_spoken_language_or_accent(audio, check_path, encodings):
-    audio_model = AudioModel.load_from_checkpoint(check_path)
+    audio_model = AudioModel.load_from_checkpoint(checkpoint_path=check_path,
+                                                  model_config=read_yaml('./configs/model/net.yaml'),
+                                                  processor_config=model_config['audio_processor'],
+                                                  sr=model_config['sr'],
+                                                  number_of_labels=model_config['encodings'][model_config['task']],
+                                                  learning_rate=model_config['learning_rate'])
     audio_model.eval()
     y_prob = audio_model(audio)
 
@@ -37,18 +45,18 @@ def detect_spoken_language_or_accent(audio, check_path, encodings):
 
 if __name__ == "__main__":
     parser = arg_parser()
-    config = read_yaml(parser.dataflow_config_path)
+    dataflow_config = read_yaml(parser.dataflow_config_path)
     model_config = read_yaml(parser.model_config_path)
     audio_dir = parser.audios_dir
 
     audios = []
 
-    for audio_path in glob(f'{audio_dir}{os.sep}*.wav'):
+    for audio_path in glob(f'{audio_dir}{os.sep}*.mp3'):
         data = format_audio(audio_path,
-                            self_samplerate=config['samplerate'],
+                            self_samplerate=dataflow_config['samplerate'],
                             resample=True,
-                            self_duration=config['duration'])
-        data = torch.tensor(data)
+                            self_duration=dataflow_config['duration'])
+        data = torch.tensor(data, dtype=torch.float32)
         audios.append(data)
 
         # data_raw, samplerate = sf.read(audio_path)
@@ -58,18 +66,19 @@ if __name__ == "__main__":
 
     data = torch.cat(audios)
 
+    checkpoint_path = '/Users/eric/Desktop/Krisp/Capstone/language_logs/version_3/checkpoints/epoch=01-val_epoch_accuracy=0.930701.ckpt'
+
+    # model = AudioModel.load_from_checkpoint(checkpoint_path=checkpoint_path,
+    #                                         model_config=read_yaml('./configs/model/net.yaml'),
+    #                                         processor_config=model_config['audio_processor'],
+    #                                         sr=model_config['sr'],
+    #                                         number_of_labels=model_config['encodings'][model_config['task']],
+    #                                         learning_rate=model_config['learning_rate'])
+    # model.eval()
+    # y_prob = model(data)
+
     print(data.shape)
 
-    checkpoint_path = '/home/capstone/Desktop/Krisp/Capstone/language_logs/version_3/checkpoints/epoch=02-val_epoch_accuracy=0.000000.ckpt'
-
-    # model = AudioModel.load_from_checkpoint(checkpoint_path, read_yaml('./configs/model/net.yaml'),
-    #                    model_config['audio_processor'],
-    #                    model_config['sr'],
-    #                    max(model_config['encodings']['language_detection'].values()) + 1,
-    #                    model_config['learning_rate'])
-    # model.eval()
-
-    # y_prob = model(data)
     # print(y_prob)
     # #
     # for idx, y in enumerate(y_prob):
