@@ -29,7 +29,7 @@ class MozillaCVImporter:
             self.file_ending = 'mp3'
             self.resample = True
 
-        for split in ['TEST', 'DEV', 'TRAIN']:
+        for split in ['Test', 'Dev', 'Train']:
             if not os.path.exists(os.path.join(self.csv_path, f'{split}_mozilla.csv')):
                 with open(os.path.join(self.csv_path, f'{split}_mozilla.csv'), 'w') as file:
                     header = csv.writer(file)
