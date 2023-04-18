@@ -1,11 +1,13 @@
+import os
 import telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
 from infer import detect_spoken_language_or_accent
+from utils import ogg_to_wav
 
 
-TOKEN = 'BOT_TOKEN'
+TOKEN = ''
 bot = telegram.Bot(token=TOKEN)
 
 languages = {'en': 'Change Language 🌐',
@@ -137,8 +139,30 @@ def handle_audio(update, context):
 
 def handle_voice(update, context):
     voice_file = context.bot.getFile(update.message.voice.file_id)
-    voice_file.download(f"voice_{update.message.chat_id}.ogg")
     update.message.reply_text("Voice message received.")
+
+    name = update.message.from_user.first_name
+    last_name_or_username = update.message.from_user.last_name or update.message.from_user.username
+    last_name_or_username = '' if last_name_or_username is None else last_name_or_username
+
+    ogg_file = f"{name}_{last_name_or_username}.ogg"
+    wav_file = f"{name}_{last_name_or_username}.wav"
+
+    if os.path.exists(wav_file):
+        wav_file = f'{wav_file}_{1}'
+
+    voice_file.download(ogg_file)
+    ogg_to_wav(ogg_file, wav_file)
+
+    # Check if the WAV file was created
+    if not os.path.isfile(wav_file):
+        update.message.reply_text("Error converting voice message.")
+        return
+
+    # Send the WAV file back to the user
+    context.bot.send_audio(chat_id=update.message.chat_id, audio=open(wav_file, 'rb'))
+
+    os.remove(ogg_file)
 
 
 updater = Updater(token=TOKEN, use_context=True)
@@ -149,6 +173,7 @@ updater.dispatcher.add_handler(CallbackQueryHandler(back_callback, pattern='^bac
 updater.dispatcher.add_handler(CallbackQueryHandler(help_callback, pattern='^help$'))
 updater.dispatcher.add_handler(MessageHandler(Filters.audio, handle_audio))
 updater.dispatcher.add_handler(MessageHandler(Filters.voice, handle_voice))
+# updater.dispatcher.add_handler(MessageHandler(Filters.voice, lambda update, context: handle_voice(update, context, path="/path/to/save/files")))
 
 
 updater.start_polling()
