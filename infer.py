@@ -56,33 +56,34 @@ if __name__ == "__main__":
                             self_samplerate=dataflow_config['samplerate'],
                             resample=True,
                             self_duration=dataflow_config['duration'])
-        data = torch.tensor(data, dtype=torch.float32)
+        data = torch.tensor(data, dtype=torch.float32).view(1, -1)
         audios.append(data)
 
-        # data_raw, samplerate = sf.read(audio_path)
-        # data = librosa.resample(data_raw, target_sr=config['sr'], orig_sr=samplerate)
-        # duration = data.shape[0] / config['sr']
-        # data = torch.tensor(data[:config['sr'] * 2], dtype=torch.float32).view(1, -1)
-
-    data = torch.cat(audios)
+    data = torch.cat(audios, dim=0)
+    print(len(audios), audios[0].shape)
+    print(data.shape)
 
     checkpoint_path = '/Users/eric/Desktop/Krisp/Capstone/language_logs/version_3/checkpoints/epoch=01-val_epoch_accuracy=0.930701.ckpt'
 
-    # model = AudioModel.load_from_checkpoint(checkpoint_path=checkpoint_path,
-    #                                         model_config=read_yaml('./configs/model/net.yaml'),
-    #                                         processor_config=model_config['audio_processor'],
-    #                                         sr=model_config['sr'],
-    #                                         number_of_labels=model_config['encodings'][model_config['task']],
-    #                                         learning_rate=model_config['learning_rate'])
-    # model.eval()
-    # y_prob = model(data)
+    number_of_labels = max(model_config['encodings'][model_config['task']].values()) + 1
 
-    print(data.shape)
+    model = AudioModel.load_from_checkpoint(checkpoint_path=checkpoint_path,
+                                            model_config=read_yaml('./configs/model/net.yaml'),
+                                            processor_config=model_config['audio_processor'],
+                                            sr=model_config['sr'],
+                                            number_of_labels=number_of_labels,
+                                            learning_rate=model_config['learning_rate'])
+    model.eval()
+    y_prob = model(data)
+
+    print(data.shape, y_prob)
 
     # print(y_prob)
-    # #
+
     # for idx, y in enumerate(y_prob):
     #     if y >= 0.5:
     #         print(f'Label of {audio_paths[idx].split(os.sep)[-1]} - M')
     #     else:
     #         print(f'Label of {audio_paths[idx].split(os.sep)[-1]} - F')
+
+
