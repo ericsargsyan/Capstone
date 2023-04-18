@@ -18,17 +18,18 @@ if __name__ == "__main__":
     parser = arg_parser()
     config = read_yaml(parser.config_path)
 
-    test_dataset = AudioDataset(config['data']['test_path'])
+    test_dataset = AudioDataset(config['data']['test_path'], config['encodings'][config['task']], config['task'])
     test_dataloader = DataLoader(test_dataset, batch_size=config['dataloader']['batch_size'],
                                  shuffle=True, num_workers=config['dataloader']['num_workers'])
 
-    path = ''
+    checkpoint_path = ''
 
-    # model = AudioModel.load_from_checkpoint(checkpoint_path=check_path,
-    #                                         model_config=read_yaml('./configs/model/net.yaml'),
-    #                                         processor_config=model_config['audio_processor'],
-    #                                         sr=model_config['sr'],
-    #                                         number_of_labels=model_config['encodings'][model_config['task']],
-    #                                         learning_rate=model_config['learning_rate'])
+    model = AudioModel.load_from_checkpoint(checkpoint_path=checkpoint_path,
+                                            model_config=read_yaml('./configs/model/net.yaml'),
+                                            processor_config=config['audio_processor'],
+                                            sr=config['sr'],
+                                            number_of_labels=max(config['encodings'][config['task']].values()) + 1,
+                                            learning_rate=config['learning_rate'])
+
     trainer = Trainer(max_epochs=config['pl_trainer']['max_epochs'])
     trainer.test(model, dataloaders=test_dataloader)
