@@ -1,4 +1,10 @@
 import os
+import subprocess
+
+
+def ogg_to_wav(input_file, output_file):
+    command = f"ffmpeg -i {input_file} {output_file}"
+    subprocess.call(command, shell=True)
 
 
 def get_last_version_number(log_dir):
