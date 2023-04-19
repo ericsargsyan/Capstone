@@ -45,13 +45,10 @@ class AudioModel(pl.LightningModule):
     def training_epoch_end(self, outputs):
         train_epoch_acc = self.train_accuracy.compute()
         self.train_accuracy.reset()
-
-        loss = sum(outputs) / len(outputs)
-
-        self.log('train_step_accuracy', train_epoch_acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('train_step_loss', loss, on_step=True, on_epoch=True, prog_bar=False, logger=True)
-
-        return loss
+        # loss = sum(outputs) / len(outputs)
+        loss = torch.stack([x['loss'] for x in outputs]).mean()
+        self.log('train_epoch_accuracy', train_epoch_acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=False, logger=True)
 
     def validation_step(self, val_batch, batch_idx):
         x, y = val_batch
@@ -69,7 +66,6 @@ class AudioModel(pl.LightningModule):
     def validation_epoch_end(self, outputs):
         val_epoch_acc = self.val_accuracy.compute()
         self.val_accuracy.reset()
-
         loss = sum(outputs) / len(outputs)
 
         self.log('val_epoch_accuracy', val_epoch_acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
