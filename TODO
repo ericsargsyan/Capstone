@@ -1,10 +1,10 @@
 General
-1. Add test.py -
-2. Add infer.py -
+1. Add test.py +
+2. Add infer.py +
 3. Add language/accent mappings to config +
 4. Get network last layer shape from mapping +
 5. Add importer for noise data +
-6. Add telegram bot
+6. Add telegram bot + (In Process)
 7. Csv, directories +
 
 Language
