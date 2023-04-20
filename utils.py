@@ -1,10 +1,9 @@
 import os
-import subprocess
 
 
 def ogg_to_wav(input_file, output_file):
-    command = f"ffmpeg -i {input_file} {output_file}"
-    subprocess.call(command, shell=True)
+    command = f"ffmpeg -y -hwaccel cuda -i {input_file} -acodec pcm_s16le -ac 1 -ar 16000 {output_file}"
+    os.system(command)
 
 
 def get_last_version_number(log_dir):
