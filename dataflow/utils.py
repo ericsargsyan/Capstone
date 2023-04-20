@@ -55,7 +55,9 @@ def mp3_to_wav(languages, path):
 def data_spliter(arr, split_size):
     indexes = np.arange(len(arr))
     np.random.shuffle(indexes)
-    train_indexes = indexes[:int(split_size*len(arr))]
-    test_indexes = indexes[int(split_size*len(arr)):]
+
+    train_indexes = indexes[:int(split_size * len(arr))]
+    test_indexes = indexes[int(split_size * len(arr)):]
+
     return arr[train_indexes], arr[test_indexes]
 
