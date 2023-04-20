@@ -17,8 +17,9 @@ def arg_parser():
 if __name__ == "__main__":
     parser = arg_parser()
     config = read_yaml(parser.config_path)
+    task = config['task']
 
-    test_dataset = AudioDataset(config['data']['test_path'], config['encodings'][config['task']], config['task'])
+    test_dataset = AudioDataset(config['data'][task]['test_path'], config['encodings'][task], task)
     test_dataloader = DataLoader(test_dataset, batch_size=config['dataloader']['batch_size'],
                                  shuffle=True, num_workers=config['dataloader']['num_workers'])
 
@@ -28,7 +29,7 @@ if __name__ == "__main__":
                                             model_config=read_yaml('./configs/model/net.yaml'),
                                             processor_config=config['audio_processor'],
                                             sr=config['sr'],
-                                            number_of_labels=max(config['encodings'][config['task']].values()) + 1,
+                                            number_of_labels=max(config['encodings'][task].values()) + 1,
                                             learning_rate=config['learning_rate'])
 
     trainer = Trainer(max_epochs=config['pl_trainer']['max_epochs'])
