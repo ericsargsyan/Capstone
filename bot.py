@@ -3,6 +3,7 @@ import telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
+from list_of_replies import *
 from infer import detect_spoken_language_or_accent
 from utils import ogg_to_wav
 from dataflow.utils import read_yaml, format_audio
@@ -20,26 +21,6 @@ def arg_parser():
 TOKEN = '6069729257:AAGxHF5C19MEuHTp30RO3eBYwai8XdeDISg'
 bot = telegram.Bot(token=TOKEN)
 
-languages = {'en': 'Change Language 🌐',
-             'es': 'Cambiar Idioma 🌐',
-             'fr': 'Changer de Langue 🌐',
-             'hy': 'Փոխել Լեզուն 🌐'}
-
-back_texts = {'en': 'Back 🔙',
-              'es': 'Atrás 🔙',
-              'fr': 'Retour 🔙',
-              'hy': 'Ետ 🔙'}
-
-helps = {'en': 'Help ❓',
-         'es': 'Ayuda ❓',
-         'fr': 'Aider ❓',
-         'hy': 'Օգնություն ❓'}
-
-change_language = {'en': 'Please select your language',
-                   'es': 'Por favor seleccione su idioma',
-                   'fr': 'Veuillez sélectionner votre langue',
-                   'hy': 'Խնդրում ենք ընտրել ձեր լեզուն'}
-
 
 def start(update, context):
     chat_id = update.message.chat_id
@@ -48,10 +29,15 @@ def start(update, context):
     message = f"Hello, {user_name}! My name is VoiceSense."
     keyboard = [
         [InlineKeyboardButton(languages[context.user_data.get('language', 'en')], callback_data='change_language')],
-        [InlineKeyboardButton(helps[context.user_data.get('language', 'en')], callback_data='help')]
+        [InlineKeyboardButton(about[context.user_data.get('language', 'en')], callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.send_message(chat_id=chat_id, text=message, reply_markup=reply_markup)
+
+
+def help(update, context):
+    language = context.user_data.get('language', 'en')
+    update.message.reply_text(help_text[language])
 
 
 def language_callback(update, context):
@@ -74,7 +60,7 @@ def language_callback(update, context):
 
     keyboard = [
         [InlineKeyboardButton(languages[language], callback_data='change_language')],
-        [InlineKeyboardButton(helps[language], callback_data='help')]
+        [InlineKeyboardButton(about[language], callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id,
@@ -113,36 +99,17 @@ def back_callback(update, context):
 
     keyboard = [
         [InlineKeyboardButton(languages[language], callback_data='change_language')],
-        [InlineKeyboardButton(helps[language], callback_data='help')]
+        [InlineKeyboardButton(about[language], callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id,
                                   text=message, reply_markup=reply_markup)
 
 
-def help_callback(update, context):
+def about_callback(update, context):
     query = update.callback_query
     language = context.user_data.get('language', 'en')
-
-    if language == 'en':
-        message = "Let me introduce myself.\n" \
-                  "I am a Telegram Bot created by the students of the Faculty of Mathematics and Mechanics at YSU," \
-                  "Eric Sargsyan and Gor Piliposyan." \
-                  "I am capable of detecting the language and accent from human speech."
-    elif language == 'es':
-        message = "Permíteme contarte sobre mí:\n" \
-                  "Soy un bot de Telegram desarrollado por los estudiantes de la Facultad de Matemáticas y Mecánica " \
-                  "de la Universidad Estatal de Ereván Eric Sargsyan y Gor Piliposyan. " \
-                  "Puedo detectar el idioma y el vocabulario a partir del habla humana."
-    elif language == 'hy':
-        message = 'Միքիչ պատմեմ իմ մասին:\n' \
-                  'Ես Telegram Bot եմ, որը ստեծվել է ԵՊՀ Մաթեմատիկայի և մեխանիկայի ֆակուլտետի ուսանողներ ' \
-                  'Էրիկ Սարգսյանի և Գոռ Փիլիպոսյանի կողմից։ Ես կարողանում եմ ճանաչել լեզուն և բարբառը մարդու խոսքից։'
-    elif language == 'fr':
-        message = "Permettez-moi de vous parler un peu de moi.\n " \
-                  "je suis Telegram Bot, qui a été créé par Erik Sargsyan et Gor Piliposyan, " \
-                  "étudiants de la Faculté de mathématiques et de mécanique de l'YSU. " \
-                  "Je peux reconnaître la langue et le dialecte à partir de la parole humaine."
+    message = intro[language]
 
     keyboard = [
         [InlineKeyboardButton(back_texts[language], callback_data='back')]
@@ -154,13 +121,14 @@ def help_callback(update, context):
 
 def handle_audio(update, context):
     audio_file = context.bot.getFile(update.message.audio.file_id)
-    audio_file.download(f"audio_{update.message.chat_id}.ogg")
-    update.message.reply_text("Audio message received.")
+    language = context.user_data.get('language', 'en')
+    update.message.reply_text(voice_received[language])
 
 
 def handle_voice(update, context, path, samplerate, duration):
     voice_file = context.bot.getFile(update.message.voice.file_id)
-    update.message.reply_text("Voice message received.")
+    language = context.user_data.get('language', 'en')
+    update.message.reply_text(voice_received[language])
 
     name = update.message.from_user.first_name
     last_name_or_username = update.message.from_user.last_name or update.message.from_user.username
@@ -180,9 +148,22 @@ def handle_voice(update, context, path, samplerate, duration):
                         resample=False,
                         self_duration=duration)
 
+    # detect_spoken_language_or_accent()
+
     # context.bot.send_audio(chat_id=update.message.chat_id, audio=open(wav_file, 'rb'))
 
     os.remove(ogg_file)
+
+
+def handle_message(update, context):
+    language = context.user_data.get('language', 'en')
+
+    if update.message.text.startswith('/'):
+        pass
+        # handle_command(update, context)
+    else:
+        response = handle_messages[language]
+        context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
 if __name__ == '__main__':
@@ -192,10 +173,11 @@ if __name__ == '__main__':
 
     updater = Updater(token=TOKEN, use_context=True)
     updater.dispatcher.add_handler(CommandHandler('start', start))
+    updater.dispatcher.add_handler(CommandHandler('help', help))
     updater.dispatcher.add_handler(CallbackQueryHandler(language_callback, pattern='^(en|es|fr|hy)$'))
     updater.dispatcher.add_handler(CallbackQueryHandler(change_language_callback, pattern='^change_language$'))
     updater.dispatcher.add_handler(CallbackQueryHandler(back_callback, pattern='^back$'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(help_callback, pattern='^help$'))
+    updater.dispatcher.add_handler(CallbackQueryHandler(about_callback, pattern='^help$'))
     updater.dispatcher.add_handler(MessageHandler(Filters.audio, handle_audio))
     updater.dispatcher.add_handler(MessageHandler(Filters.voice,
                                                   lambda update, context:
@@ -206,6 +188,7 @@ if __name__ == '__main__':
                                                                )
                                                   )
                                    )
+    updater.dispatcher.add_handler(MessageHandler(Filters.text, handle_message))
 
     updater.start_polling()
     updater.idle()
