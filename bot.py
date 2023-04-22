@@ -5,9 +5,11 @@ from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
 from list_of_replies import *
 from infer import detect_spoken_language_or_accent
+from model import AudioModel
 from utils import ogg_to_wav
 from dataflow.utils import read_yaml, format_audio
 import argparse
+from utils import get_best_checkpoint
 
 
 def arg_parser():
@@ -18,7 +20,7 @@ def arg_parser():
     return parser.parse_args()
 
 
-TOKEN = '6069729257:AAGxHF5C19MEuHTp30RO3eBYwai8XdeDISg'
+TOKEN = '6134670581:AAFm6yE0iasDgJqpp0zUIKwIOS7pvraLXFE'
 bot = telegram.Bot(token=TOKEN)
 
 
@@ -123,14 +125,13 @@ def about_callback(update, context):
 def handle_audio(update, context):
     audio_file = context.bot.getFile(update.message.audio.file_id)
     language = context.user_data.get('language', 'en')
-    # update.message.reply_text(voice_received[language])
+    update.message.reply_text(voice_received[language])
 
 
-def handle_voice(update, context, path, samplerate, duration):
+def handle_voice(update, context, model, path, samplerate, duration, encodings):
     voice_file = context.bot.getFile(update.message.voice.file_id)
     language = context.user_data.get('language', 'en')
-    print(voice_received)
-    update.message.reply_text('aaaaaaaa')
+    update.message.reply_text(voice_received[language])
 
     name = update.message.from_user.first_name
     last_name_or_username = update.message.from_user.last_name or update.message.from_user.username
@@ -150,9 +151,8 @@ def handle_voice(update, context, path, samplerate, duration):
                         resample=False,
                         self_duration=duration)
 
-    # detect_spoken_language_or_accent()
-
-    # context.bot.send_audio(chat_id=update.message.chat_id, audio=open(wav_file, 'rb'))
+    reply = detect_spoken_language_or_accent(data, model, encodings)
+    update.message.reply_text(reply)
 
     os.remove(ogg_file)
 
@@ -181,28 +181,47 @@ def trained_accents_of_model(update, context):
 if __name__ == '__main__':
     parser = arg_parser()
     config = read_yaml(parser.config_path)
-    path_to_voices = config['voices_path']
+    path_to_voices = config['telegram_voices']
+    model_config = read_yaml(config['model_config_path'])
+    task = model_config['task']
+    checkpoint_path = model_config['checkpoint_path']
+    number_of_labels = max(model_config['encodings'][task].values()) + 1
+
+    os.makedirs(config['telegram_voices'], exist_ok=True)
+
+    model = AudioModel.load_from_checkpoint(checkpoint_path=checkpoint_path,
+                                            model_config=read_yaml(model_config['model_config_path']),
+                                            processor_config=model_config['audio_processor'],
+                                            sr=model_config['sr'],
+                                            number_of_labels=number_of_labels,
+                                            learning_rate=model_config['learning_rate'],
+                                            encodings=model_config['encodings'][task])
+    model.eval()
 
     updater = Updater(token=TOKEN, use_context=True)
-    updater.dispatcher.add_handler(CommandHandler('start', start))
-    updater.dispatcher.add_handler(CommandHandler('help', help))
-    updater.dispatcher.add_handler(CommandHandler("languages", trained_languages_of_model))
-    updater.dispatcher.add_handler(CommandHandler("accents", trained_accents_of_model))
-    updater.dispatcher.add_handler(CallbackQueryHandler(language_callback, pattern='^(en|es|fr|hy)$'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(change_language_callback, pattern='^change_language$'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(back_callback, pattern='^back$'))
-    updater.dispatcher.add_handler(CallbackQueryHandler(about_callback, pattern='^help$'))
-    updater.dispatcher.add_handler(MessageHandler(Filters.audio, handle_audio))
-    updater.dispatcher.add_handler(MessageHandler(Filters.voice,
-                                                  lambda update, context:
-                                                  handle_voice(update, context,
-                                                               path=path_to_voices,
-                                                               samplerate=config['samplerate'],
-                                                               duration=config['duration']
-                                                               )
-                                                  )
-                                   )
-    updater.dispatcher.add_handler(MessageHandler(Filters.text, handle_message))
+    telegram = updater.dispatcher
+
+    telegram.add_handler(CommandHandler('start', start))
+    telegram.add_handler(CommandHandler('help', help))
+    telegram.add_handler(CommandHandler("languages", trained_languages_of_model))
+    telegram.add_handler(CommandHandler("accents", trained_accents_of_model))
+    telegram.add_handler(CallbackQueryHandler(language_callback, pattern='^(en|es|fr|hy)$'))
+    telegram.add_handler(CallbackQueryHandler(change_language_callback, pattern='^change_language$'))
+    telegram.add_handler(CallbackQueryHandler(back_callback, pattern='^back$'))
+    telegram.add_handler(CallbackQueryHandler(about_callback, pattern='^help$'))
+    telegram.add_handler(MessageHandler(Filters.audio, handle_audio))
+    telegram.add_handler(MessageHandler(Filters.voice,
+                                        lambda update, context:
+                                        handle_voice(update, context,
+                                                     path=path_to_voices,
+                                                     samplerate=config['samplerate'],
+                                                     duration=config['duration'],
+                                                     model=model,
+                                                     encodings=model_config['encodings'][task]
+                                                     )
+                                        )
+                         )
+    telegram.add_handler(MessageHandler(Filters.text, handle_message))
 
     updater.start_polling()
     updater.idle()
