@@ -199,7 +199,7 @@ if __name__ == '__main__':
                                                                samplerate=config['samplerate'],
                                                                duration=config['duration']
                                                                )
-)
+                                                  )
                                    )
     updater.dispatcher.add_handler(MessageHandler(Filters.text, handle_message))
 
