@@ -28,6 +28,7 @@ class AudioModel(pl.LightningModule):
         self.test_f1 = MulticlassF1Score(num_classes=number_of_labels, average=None)
 
         self.index_to_label = {}
+
         for key, value in encodings.items():
             if value not in self.index_to_label:
                 self.index_to_label[value] = key
@@ -37,7 +38,6 @@ class AudioModel(pl.LightningModule):
     def forward(self, x):
         x = self.audio_processor(x)
         x = self.net(x)
-
         return x
 
     def training_step(self, train_batch, batch_idx):
@@ -47,7 +47,6 @@ class AudioModel(pl.LightningModule):
 
         loss = self.loss_fn(predict, y)
         batch_accuracy = self.train_accuracy(prediction, y)
-
         batch_train_f1 = self.val_f1(prediction, y)
 
         if (self.global_step+1) % self.trainer.log_every_n_steps == 0:
@@ -81,10 +80,6 @@ class AudioModel(pl.LightningModule):
         self.log('val_step_loss', loss, on_step=True, on_epoch=False, prog_bar=False, logger=True)
 
         return loss
-        # {
-        #     'loss': loss
-                # , 'batch_f1': batch_f1
-                # }
 
     def validation_epoch_end(self, outputs):
         val_epoch_acc = self.val_accuracy.compute()
@@ -102,7 +97,15 @@ class AudioModel(pl.LightningModule):
         self.log('val_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
     def test_step(self, test_batch, batch_idx):
-        pass
+        x, y = test_batch
+        predict = self(x)
+        prediction = torch.argmax(predict, dim=1)
+
+        loss = self.loss_fn(predict, y)
+        self.test_accuracy(prediction, y)
+        self.test_f1(prediction, y)
+
+        return loss
 
     def test_epoch_end(self, outputs):
         test_epoch_acc = self.test_accuracy.compute()
@@ -110,8 +113,8 @@ class AudioModel(pl.LightningModule):
 
         loss = sum(outputs) / len(outputs)
 
-        self.log('test_epoch_accuracy', test_epoch_acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
-        self.log('test_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        print('test_epoch_accuracy', test_epoch_acc)
+        print('test_epoch_loss', loss)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
