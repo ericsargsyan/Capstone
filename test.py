@@ -23,14 +23,14 @@ if __name__ == "__main__":
     test_dataloader = DataLoader(test_dataset, batch_size=config['dataloader']['batch_size'],
                                  shuffle=True, num_workers=config['dataloader']['num_workers'])
 
-    checkpoint_path = ''
+    checkpoint_path = '/home/capstone/Desktop/Krisp/Capstone/exp/version_18/checkpoints/epoch=00-val_epoch_accuracy=0.150000.ckpt'
 
     model = AudioModel.load_from_checkpoint(checkpoint_path=checkpoint_path,
                                             model_config=read_yaml('./configs/model/net.yaml'),
                                             processor_config=config['audio_processor'],
                                             sr=config['sr'],
                                             number_of_labels=max(config['encodings'][task].values()) + 1,
-                                            learning_rate=config['learning_rate'])
-
-    trainer = Trainer(max_epochs=config['pl_trainer']['max_epochs'])
+                                            learning_rate=config['learning_rate'],
+                                            encodings=config['encodings'][task])
+    trainer = Trainer(**config['pl_trainer'])
     trainer.test(model, dataloaders=test_dataloader)
