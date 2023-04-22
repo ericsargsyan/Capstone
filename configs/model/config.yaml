@@ -48,9 +48,9 @@ pl_trainer:
   max_epochs: 500
   devices: 1
   accelerator: gpu
-  limit_train_batches: 100
-  limit_val_batches: 50
-  val_check_interval: 0.2
+#  limit_train_batches: 100
+#  limit_val_batches: 50
+  val_check_interval: 0.1
   log_every_n_steps: 10
 
 checkpoint_path: None
