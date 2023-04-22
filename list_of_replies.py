@@ -56,27 +56,42 @@ help_text = {'en': "Here are the commands list. 🤖\n\n"
                    "/languages - Trained languages\n"
                    "/accents - Trained accents\n"
                    "/help - Get help\n",
-             'es': 'Aquí está la lista de comandos. 🤖',
+             'es': 'Aquí está la lista de comandos. 🤖\n\n'
                    "/start - Iniciar el bot\n"
                    "/support - How to control me\n"
                    "/languages - Idiomas entrenados\n"
                    "/accents - Acentos entrenados\n"
-                   "/help - Consigue ayuda\n"
-             'fr': 'Voici la liste des commandes. 🤖'
+                   "/help - Consigue ayuda\n",
+             'fr': 'Voici la liste des commandes. 🤖\n\n'
                    "/start - Démarrer le robot\n"
                    "/support - Comment me contrôler\n"
                    "/languages - Langues enseignées\n"
                    "/accents - Accents entraînés\n"
                    "/help - Obtenir de l'aide\n",
-             'hy': "Ահա հրամանների ցանկը: 🤖"
+             'hy': "Ահա հրամանների ցանկը: 🤖\n\n"
                    "/start - Սկսել բոտը.\n"
                    "/support - Ինչպես կառավարել ինձ.\n"
                    "/languages - Սովորած  լեզուներ\n"
                    "/accents - Սովորած  Բարբառներ\n"
-                   "/help - Օգնություն\n"
+                    "/help - Օգնություն\n"
              }
 
 trained_languages = {'en': 'English, French, German, Spanish, Catalan, Belarusian',
                      'es': 'Inglés, Francés, Alemán, Español, Catalán, Bielorruso',
                      'fr': 'Anglais, Français, Allemand, Espagnol, Catalan, Biélorusse',
                      'hy': 'Անգլերեն, Ֆրանսերեն, Գերմաներեն, Իսպաներեն, Կատալոներեն, Բելառուսերեն'}
+
+trained_accents = {'en': "American English, British English, India and South Asia (India, Pakistan, Sri Lanka),"
+                         "Canadian English, Australian English, German English",
+                   'es': 'Inglés americano, inglés británico, India y el sur de Asia (India, Pakistán, Sri Lanka),'
+                         'Inglés canadiense, inglés australiano, inglés alemán',
+                   'fr': 'Anglais américain, anglais britannique, Inde et Asie du Sud (Inde, Pakistan, Sri Lanka)'
+                         'Anglais canadien, anglais australien, anglais allemand',
+                   'hy': 'Ամերիկյան անգլերեն, բրիտանական անգլերեն, Հնդկաստան և Հարավային Ասիա '
+                         '(Հնդկաստան, Պակիստան, Շրի Լանկա), Կանադական անգլերեն, '
+                         'ավստրալիական անգլերեն, գերմանական անգլերեն'}
+
+train_reply = {'en': 'The following languages have currently been trained:',
+               'es': 'Actualmente se han capacitado los siguientes idiomas:',
+               'fr': 'Les langues suivantes ont actuellement été formées :',
+               'hy': 'Ներկայումս սովորել եմ հետևյալ լեզուները:'}
