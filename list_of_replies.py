@@ -73,7 +73,7 @@ help_text = {'en': "Here are the commands list. 🤖\n\n"
                    "/support - Ինչպես կառավարել ինձ.\n"
                    "/languages - Սովորած  լեզուներ\n"
                    "/accents - Սովորած  Բարբառներ\n"
-                    "/help - Օգնություն\n"
+                   "/help - Օգնություն\n"
              }
 
 trained_languages = {'en': 'English, French, German, Spanish, Catalan, Belarusian',
