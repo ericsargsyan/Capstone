@@ -33,7 +33,7 @@ class MozillaCVImporter:
             if not os.path.exists(os.path.join(self.csv_path, f'{split}_mozilla.csv')):
                 with open(os.path.join(self.csv_path, f'{split}_mozilla.csv'), 'w') as file:
                     header = csv.writer(file)
-                    header.writerow(['index', 'path', task.split('_')[0]])
+                    header.writerow(['path', task.split('_')[0]])
 
     def import_datasets(self, languages):
         for language in languages:
@@ -73,7 +73,7 @@ class MozillaCVImporter:
 
             with open(labels_path, 'a+') as file:
                 csvwriter = csv.writer(file)
-                csvwriter.writerow([index, new_audio_filepath, label])
+                csvwriter.writerow([new_audio_filepath, label])
 
             index += 1
 
