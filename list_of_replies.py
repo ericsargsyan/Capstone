@@ -56,9 +56,24 @@ help_text = {'en': "Here are the commands list. 🤖\n\n"
                    "/languages - Trained languages\n"
                    "/accents - Trained accents\n"
                    "/help - Get help\n",
-             'es': '',
-             'fr': '',
-             'hy': 'Ահա հրամանների ցանկը: 🤖'
+             'es': 'Aquí está la lista de comandos. 🤖',
+                   "/start - Iniciar el bot\n"
+                   "/support - How to control me\n"
+                   "/languages - Idiomas entrenados\n"
+                   "/accents - Acentos entrenados\n"
+                   "/help - Consigue ayuda\n"
+             'fr': 'Voici la liste des commandes. 🤖'
+                   "/start - Démarrer le robot\n"
+                   "/support - Comment me contrôler\n"
+                   "/languages - Langues enseignées\n"
+                   "/accents - Accents entraînés\n"
+                   "/help - Obtenir de l'aide\n",
+             'hy': "Ահա հրամանների ցանկը: 🤖"
+                   "/start - Սկսել բոտը.\n"
+                   "/support - Ինչպես կառավարել ինձ.\n"
+                   "/languages - Սովորած  լեզուներ\n"
+                   "/accents - Սովորած  Բարբառներ\n"
+                   "/help - Օգնություն\n"
              }
 
 trained_languages = {'en': 'English, French, German, Spanish, Catalan, Belarusian',
