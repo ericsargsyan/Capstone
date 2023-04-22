@@ -103,7 +103,8 @@ def back_callback(update, context):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id,
-                                  text=message, reply_markup=reply_markup)
+                                  text=message,
+                                  reply_markup=reply_markup)
 
 
 def about_callback(update, context):
@@ -122,7 +123,7 @@ def about_callback(update, context):
 def handle_audio(update, context):
     audio_file = context.bot.getFile(update.message.audio.file_id)
     language = context.user_data.get('language', 'en')
-    update.message.reply_text(voice_received[language])
+    # update.message.reply_text(voice_received[language])
 
 
 def handle_voice(update, context, path, samplerate, duration):
@@ -166,20 +167,26 @@ def handle_message(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
-# def languages(update, context):
-#     language_list = '\n'.join(trained_languages)
-#     # Send the list of trained languages as a message
-#     update.message.reply_text(f"The following languages have currently been trained: \n{language_list}")
+def trained_languages_of_model(update, context):
+    language = context.user_data.get('language', 'en')
+    update.message.reply_text(f"{train_reply[language]} \n{trained_languages[language]}")
+
+
+def trained_accents_of_model(update, context):
+    language = context.user_data.get('language', 'en')
+    update.message.reply_text(f"{train_reply[language]} \n{trained_accents[language]}")
 
 
 if __name__ == '__main__':
     parser = arg_parser()
     config = read_yaml(parser.config_path)
-    path_to_voices = config['our_voices_path']
+    path_to_voices = config['voices_path']
 
     updater = Updater(token=TOKEN, use_context=True)
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CommandHandler('help', help))
+    updater.dispatcher.add_handler(CommandHandler("languages", trained_languages_of_model))
+    updater.dispatcher.add_handler(CommandHandler("accents", trained_accents_of_model))
     updater.dispatcher.add_handler(CallbackQueryHandler(language_callback, pattern='^(en|es|fr|hy)$'))
     updater.dispatcher.add_handler(CallbackQueryHandler(change_language_callback, pattern='^change_language$'))
     updater.dispatcher.add_handler(CallbackQueryHandler(back_callback, pattern='^back$'))
@@ -188,11 +195,11 @@ if __name__ == '__main__':
     updater.dispatcher.add_handler(MessageHandler(Filters.voice,
                                                   lambda update, context:
                                                   handle_voice(update, context,
-                                                                            path=path_to_voices,
-                                                                            samplerate=config['samplerate'],
-                                                                            duration=config['duration']
+                                                               path=path_to_voices,
+                                                               samplerate=config['samplerate'],
+                                                               duration=config['duration']
                                                                )
-                                                  )
+)
                                    )
     updater.dispatcher.add_handler(MessageHandler(Filters.text, handle_message))
 
