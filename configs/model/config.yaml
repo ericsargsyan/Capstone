@@ -37,7 +37,7 @@ data:
     ]
 
 log_dir:
-  language_detection: /home/capstone/Desktop/Krisp/Capstone/exp
+  language_detection: /home/capstone/Desktop/Krisp/Capstone/language_logs
   accent_detection: /home/capstone/Desktop/Krisp/Capstone/accent_logs
 
 dataloader:
@@ -50,6 +50,7 @@ pl_trainer:
   accelerator: gpu
 #  limit_train_batches: 100
 #  limit_val_batches: 50
+#  limit_test_batches: 100
   val_check_interval: 0.1
   log_every_n_steps: 10
 
@@ -73,12 +74,14 @@ encodings:
     es: 3 # spanish
     ca: 4 # catalan
     be: 5 # belarusian
+    it: 6 # italian
 
     # other labels
-    it: 6 # italian
-    el: 6 # greek
-    hy-AM: 6 # armenian
-    Other: 7 # Noise
+    el: 7 # greek
+    hy-AM: 7 # armenian
+    ka: 7 # georgian
+    bg: # bulgarian
+    Other: 8 # Noise
 
   accent_detection:
     # Mozilla
@@ -89,7 +92,7 @@ encodings:
     Australian English: 4
     German English,Non native speaker: 5
 
-    # accentdb
+    # AccentDB
     american: 0
     british: 1
     indian: 2
