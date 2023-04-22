@@ -4,10 +4,11 @@ from torch import nn
 from torchmetrics import Accuracy
 from net.speaker_net import SpeakerNet
 from net.layers import NormalizedMelSpectogram
+from torchmetrics.classification import MulticlassF1Score
 
 
 class AudioModel(pl.LightningModule):
-    def __init__(self, model_config, processor_config, sr, number_of_labels, learning_rate):
+    def __init__(self, model_config, processor_config, sr, number_of_labels, learning_rate, encodings):
         super().__init__()
         self.net = SpeakerNet(model_config, number_of_labels)
         win_length = int(processor_config.pop('win_length') * sr)
@@ -22,6 +23,16 @@ class AudioModel(pl.LightningModule):
         self.train_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
         self.val_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
         self.test_accuracy = Accuracy(task='multiclass', num_classes=number_of_labels)
+        self.train_f1 = MulticlassF1Score(num_classes=number_of_labels, average=None)
+        self.val_f1 = MulticlassF1Score(num_classes=number_of_labels, average=None)
+        self.test_f1 = MulticlassF1Score(num_classes=number_of_labels, average=None)
+
+        self.index_to_label = {}
+        for key, value in encodings.items():
+            if value not in self.index_to_label:
+                self.index_to_label[value] = key
+            else:
+                self.index_to_label[value] = self.index_to_label[value]+f', {key}'
 
     def forward(self, x):
         x = self.audio_processor(x)
@@ -37,16 +48,23 @@ class AudioModel(pl.LightningModule):
         loss = self.loss_fn(predict, y)
         batch_accuracy = self.train_accuracy(prediction, y)
 
-        self.log('train_step_accuracy', batch_accuracy, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('train_step_loss', loss, on_step=True, on_epoch=True, prog_bar=False, logger=True)
+        batch_train_f1 = self.val_f1(prediction, y)
+
+        if (self.global_step+1) % self.trainer.log_every_n_steps == 0:
+            for i, f1 in enumerate(batch_train_f1):
+                self.logger.experiment.add_scalars(f'train_step_f1', {f"{self.index_to_label[i]}": f1}, self.global_step)
+
+        self.log('train_step_accuracy', batch_accuracy, on_step=True, on_epoch=False, prog_bar=True, logger=True)
+        self.log('train_step_loss', loss, on_step=True, on_epoch=False, prog_bar=False, logger=True)
 
         return loss
 
     def training_epoch_end(self, outputs):
         train_epoch_acc = self.train_accuracy.compute()
         self.train_accuracy.reset()
-        # loss = sum(outputs) / len(outputs)
+
         loss = torch.stack([x['loss'] for x in outputs]).mean()
+
         self.log('train_epoch_accuracy', train_epoch_acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=False, logger=True)
 
@@ -57,16 +75,28 @@ class AudioModel(pl.LightningModule):
 
         loss = self.loss_fn(predict, y)
         batch_accuracy = self.val_accuracy(prediction, y)
+        self.val_f1(prediction, y)
 
-        self.log('val_step_accuracy', batch_accuracy, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('val_step_loss', loss, on_step=True, on_epoch=True, prog_bar=False, logger=True)
+        self.log('val_step_accuracy', batch_accuracy, on_step=True, on_epoch=False, prog_bar=True, logger=True)
+        self.log('val_step_loss', loss, on_step=True, on_epoch=False, prog_bar=False, logger=True)
 
         return loss
+        # {
+        #     'loss': loss
+                # , 'batch_f1': batch_f1
+                # }
 
     def validation_epoch_end(self, outputs):
         val_epoch_acc = self.val_accuracy.compute()
         self.val_accuracy.reset()
+        val_epoch_f1 = self.val_f1.compute().tolist()
+        self.val_f1.reset()
+
         loss = sum(outputs) / len(outputs)
+        # loss = torch.stack([x['loss'] for x in outputs]).mean()
+
+        for i, f1 in enumerate(val_epoch_f1):
+            self.logger.experiment.add_scalars(f'val_f1_epoch', {f"{self.index_to_label[i]}": f1}, self.global_step)
 
         self.log('val_epoch_accuracy', val_epoch_acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('val_epoch_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)

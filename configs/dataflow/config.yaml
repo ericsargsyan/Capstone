@@ -1,6 +1,6 @@
 samplerate: 16000
 duration: 5
-target_dir: /home/capstone/Desktop/HDD3/data
+target_dir: /media/capstone/HDD2/data
 
 datasets:
   MozillaCV:
@@ -28,3 +28,4 @@ convert:
   wav: True
 
 voices_path: '/home/capstone/Desktop/Krisp/source_data/voices'
+

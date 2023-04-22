@@ -129,7 +129,8 @@ def handle_audio(update, context):
 def handle_voice(update, context, path, samplerate, duration):
     voice_file = context.bot.getFile(update.message.voice.file_id)
     language = context.user_data.get('language', 'en')
-    update.message.reply_text(voice_received[language])
+    print(voice_received)
+    update.message.reply_text('aaaaaaaa')
 
     name = update.message.from_user.first_name
     last_name_or_username = update.message.from_user.last_name or update.message.from_user.username

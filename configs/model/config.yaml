@@ -3,9 +3,18 @@ sr: 16000
 task: language_detection
 data:
   language_detection:
-    train_path: [/media/capstone/HDD2/data/labels/Train_mozilla.csv]
-    val_path: [/media/capstone/HDD2/data/labels/Dev_mozilla.csv]
-    test_path: [/media/capstone/HDD2/data/labels/Test_mozilla.csv]
+    train_path: [
+                 /media/capstone/HDD2/data/labels/Train_mozilla.csv,
+                /media/capstone/HDD2/data/labels/Train_musan.csv
+    ]
+    val_path: [
+               /media/capstone/HDD2/data/labels/Dev_mozilla.csv,
+              /media/capstone/HDD2/data/labels/Dev_musan.csv
+    ]
+    test_path: [
+                /media/capstone/HDD2/data/labels/Test_mozilla.csv,
+               /media/capstone/HDD2/data/labels/Test_musan.csv
+    ]
 
   accent_detection:
     train_path: [
@@ -28,7 +37,7 @@ data:
     ]
 
 log_dir:
-  language_detection: /home/capstone/Desktop/Krisp/Capstone/language_logs
+  language_detection: /home/capstone/Desktop/Krisp/Capstone/exp
   accent_detection: /home/capstone/Desktop/Krisp/Capstone/accent_logs
 
 dataloader:
@@ -39,9 +48,10 @@ pl_trainer:
   max_epochs: 500
   devices: 1
   accelerator: gpu
-#  limit_train_batches: 20
-  val_check_interval: 0.1
-#  limit_train_batches: 10
+  limit_train_batches: 100
+  limit_val_batches: 50
+  val_check_interval: 0.2
+  log_every_n_steps: 10
 
 checkpoint_path: None
 

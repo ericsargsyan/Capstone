@@ -34,13 +34,14 @@ if __name__ == "__main__":
     train_dataloader = DataLoader(train_dataset, batch_size=dataloader_config['batch_size'],
                                   shuffle=True, num_workers=config['dataloader']['num_workers'])
     val_dataloader = DataLoader(val_dataset, batch_size=dataloader_config['batch_size'],
-                                shuffle=False, num_workers=config['dataloader']['num_workers'])
+                                shuffle=True, num_workers=config['dataloader']['num_workers'])
 
     model = AudioModel(model_config,
                        config['audio_processor'],
                        config['sr'],
                        max(config['encodings'][task].values()) + 1,
-                       config['learning_rate'])
+                       config['learning_rate'],
+                       config['encodings'][task])
 
     log_dir_path = config['log_dir'][task]
     version_number = get_last_version_number(log_dir_path)

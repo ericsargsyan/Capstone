@@ -9,8 +9,8 @@ from dataflow.utils import format_audio
 class MozillaCVImporter:
     def __init__(self, config, task):
         self.source_path = config['datasets']['MozillaCV']['source_path']
-        self.target_dir = os.path.join(config['target_dir'], task, 'MozillaCV')
-        self.csv_path = os.path.join(config['target_dir'], task, 'labels')
+        self.target_dir = os.path.join(config['target_dir'], 'MozillaCV')
+        self.csv_path = os.path.join(config['target_dir'], 'labels')
         os.makedirs(self.target_dir, exist_ok=True)
         os.makedirs(self.csv_path, exist_ok=True)
         self.samplerate = config['samplerate']
