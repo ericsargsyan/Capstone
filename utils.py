@@ -3,6 +3,7 @@ from glob import glob
 
 
 def ogg_to_wav(input_file, output_file):
+    output_file = handle_same_filename(output_file)
     command = f"ffmpeg -y -hwaccel cuda -i {input_file} -acodec pcm_s16le -ac 1 -ar 16000 {output_file}"
     os.system(command)
 
@@ -31,3 +32,16 @@ def get_best_checkpoint(base_path, check_path):
     checkpoint_path = checkpoint_files[accuracies.index(max(accuracies))]
 
     return checkpoint_path
+
+
+def handle_same_filename(path):
+    if not os.path.exists(path):
+        return path
+    index = 1
+
+    while True:
+        new_file_name = f'{path[:-4]}_{index}{path[-4:]}'
+        if not os.path.exists(new_file_name):
+            return new_file_name
+
+        index += 1
