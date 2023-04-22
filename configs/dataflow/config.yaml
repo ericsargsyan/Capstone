@@ -26,3 +26,5 @@ convert:
   need_to_convert: False
   datasets_to_convert: [MozillaCV]
   wav: True
+
+voices_path: '/home/capstone/Desktop/Krisp/source_data/voices'
