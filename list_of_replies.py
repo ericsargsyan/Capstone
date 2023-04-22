@@ -48,7 +48,7 @@ intro = {'en': "Let me introduce myself.\n"
 voice_received = {'en': 'Voice message received. 🎤',
                   'es': 'Mensaje de voz recibido. 🎤',
                   'fr': "Message vocal reçu. 🎤",
-                  'hy': 'Ձայնային հաղորդագրություն ստացվել է:🎤'},
+                  'hy': 'Ձայնային հաղորդագրություն ստացվել է:🎤'}
 
 help_text = {'en': "Here are the commands list. 🤖\n\n"
                    "/start - Start the bot\n"
