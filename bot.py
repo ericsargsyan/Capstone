@@ -6,10 +6,9 @@ from telegram.ext import MessageHandler, Filters
 from list_of_replies import *
 from infer import detect_spoken_language_or_accent
 from model import AudioModel
-from utils import ogg_to_wav
+from utils import ogg_to_wav, handle_same_filename
 from dataflow.utils import read_yaml, format_audio
 import argparse
-from utils import get_best_checkpoint
 
 
 def arg_parser():
@@ -144,6 +143,7 @@ def handle_voice(update, context, model, path, samplerate, duration, encodings):
     #     wav_file = f'{wav_file}_{1}'
 
     voice_file.download(ogg_file)
+
     ogg_to_wav(ogg_file, wav_file)
 
     data = format_audio(wav_file,
