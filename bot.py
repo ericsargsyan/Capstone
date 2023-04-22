@@ -166,6 +166,12 @@ def handle_message(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
+# def languages(update, context):
+#     language_list = '\n'.join(trained_languages)
+#     # Send the list of trained languages as a message
+#     update.message.reply_text(f"The following languages have currently been trained: \n{language_list}")
+
+
 if __name__ == '__main__':
     parser = arg_parser()
     config = read_yaml(parser.config_path)
