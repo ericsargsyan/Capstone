@@ -142,17 +142,17 @@ pretrained_accents = {
                           'Anglais allemand 🇩🇪'],
                    'hy': ['Ամերիկյան անգլերեն 🇺🇸',
                           'Բրիտանական անգլերեն 🇬🇧',
-                          'Հնդկաստան 🇮🇳, Պակիստան 🇵🇰, Շրի Լանկա 🇱🇰',
+                          # 'Հնդկաստան 🇮🇳,Պակիստան 🇵🇰,Շրի Լանկա 🇱🇰',
                           'Կանադական անգլերեն 🇨🇦',
                           'Ավստրալիական անգլերեն 🇦🇺',
                           'Գերմանական անգլերեն 🇩🇪']}
 
 train_lang_reply = {'en': 'The following languages have currently been trained:',
                     'es': 'Actualmente se han capacitado los siguientes idiomas:',
-                    'fr': 'Les langues suivantes ont actuellement été formées :',
+                    'fr': 'Les langues suivantes ont actuellement été formées:',
                     'hy': 'Ներկայումս սովորել եմ հետևյալ լեզուները:'}
 
-train_accent_reply = {'en': 'The following acccents of english have currently been trained:',
-                      'es': 'Actualmente se han capacitado los siguientes idiomas:',
-                      'fr': 'Les langues suivantes ont actuellement été formées :',
-                      'hy': 'Ներկայումս սովորել եմ հետևյալ լեզուները:'}
+train_accent_reply = {'en': 'The following accents of english have currently been trained:',
+                      'es': 'Actualmente se han entrenado los siguientes acentos de inglés:',
+                      'fr': "Les accents d'anglais suivants ont actuellement été entraînés:",
+                      'hy': 'Ներկայումս սովորել եմ անգլերենի հետևյալ բարբառներ:'}
