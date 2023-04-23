@@ -6,7 +6,7 @@ from telegram.ext import MessageHandler, Filters
 from list_of_replies import *
 from infer import detect_spoken_language_or_accent
 from model import AudioModel
-from utils import ogg_to_wav, handle_same_filename
+from utils import ogg_to_wav
 from dataflow.utils import read_yaml, format_audio
 import argparse
 
@@ -26,19 +26,33 @@ bot = telegram.Bot(token=TOKEN)
 def start(update, context):
     chat_id = update.message.chat_id
     user_name = update.message.from_user.first_name
+    language = context.user_data.get('language', 'en')
 
     message = f"Hello, {user_name}! My name is VoiceSense."
     keyboard = [
-        [InlineKeyboardButton(languages[context.user_data.get('language', 'en')], callback_data='change_language')],
-        [InlineKeyboardButton(about[context.user_data.get('language', 'en')], callback_data='help')]
+        [InlineKeyboardButton(languages[language], callback_data='change_language')],
+        [InlineKeyboardButton(main_menu_train_languages[language], callback_data='trained_languages_of_model')],
+        [InlineKeyboardButton(main_menu_train_accents[language], callback_data='trained_accents_of_model')],
+        [InlineKeyboardButton(about[language], callback_data='about')],
+        [InlineKeyboardButton(helps[language], callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.send_message(chat_id=chat_id, text=message, reply_markup=reply_markup)
 
 
-def help(update, context):
-    language = context.user_data.get('language', 'en')
-    update.message.reply_text(help_text[language])
+# def help(update, context):
+#     language = context.user_data.get('language', 'en')
+#     update.message.reply_text(help_text[language])
+
+
+def help_callback(update, context):
+    # chat_id = update.callback_query.message.chat_id
+    # language = context.user_data.get('language', 'en')
+
+    query = update.callback_query
+    query.answer()
+    message = "How can I help you?"
+    query.edit_message_text(text=message)
 
 
 def language_callback(update, context):
@@ -61,7 +75,10 @@ def language_callback(update, context):
 
     keyboard = [
         [InlineKeyboardButton(languages[language], callback_data='change_language')],
-        [InlineKeyboardButton(about[language], callback_data='help')]
+        [InlineKeyboardButton(main_menu_train_languages[language], callback_data='trained_languages_of_model')],
+        [InlineKeyboardButton(main_menu_train_accents[language], callback_data='trained_accents_of_model')],
+        [InlineKeyboardButton(about[language], callback_data='about')],
+        [InlineKeyboardButton(helps[language], callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id,
@@ -100,7 +117,10 @@ def back_callback(update, context):
 
     keyboard = [
         [InlineKeyboardButton(languages[language], callback_data='change_language')],
-        [InlineKeyboardButton(about[language], callback_data='help')]
+        [InlineKeyboardButton(main_menu_train_languages[language], callback_data='trained_languages_of_model')],
+        [InlineKeyboardButton(main_menu_train_accents[language], callback_data='trained_accents_of_model')],
+        [InlineKeyboardButton(about[language], callback_data='about')],
+        [InlineKeyboardButton(helps[language], callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id,
@@ -169,13 +189,41 @@ def handle_message(update, context):
 
 
 def trained_languages_of_model(update, context):
+    query = update.callback_query
     language = context.user_data.get('language', 'en')
-    update.message.reply_text(f"{train_reply[language]} \n{trained_languages[language]}")
+
+    trained_languages = pretrained_languages[language]
+
+    keyboard = []
+    row = []
+    for lang in trained_languages:
+        row.append(InlineKeyboardButton(lang, callback_data=lang))
+        if len(row) == 2:
+            keyboard.append(row)
+            row = []
+    if row:
+        keyboard.append(row)
+
+    keyboard.append([InlineKeyboardButton(back_texts[language], callback_data='back')])
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    query.edit_message_text(text=train_lang_reply[language], reply_markup=reply_markup)
 
 
 def trained_accents_of_model(update, context):
+    query = update.callback_query
     language = context.user_data.get('language', 'en')
-    update.message.reply_text(f"{train_reply[language]} \n{trained_accents[language]}")
+
+    trained_accents = pretrained_accents[language]
+
+    keyboard = []
+    for lang in trained_accents:
+        keyboard.append([InlineKeyboardButton(lang, callback_data=lang)])
+
+    keyboard.append([InlineKeyboardButton(back_texts[language], callback_data='back')])
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    query.edit_message_text(text=train_accent_reply[language], reply_markup=reply_markup)
 
 
 if __name__ == '__main__':
@@ -202,13 +250,16 @@ if __name__ == '__main__':
     telegram = updater.dispatcher
 
     telegram.add_handler(CommandHandler('start', start))
-    telegram.add_handler(CommandHandler('help', help))
+    # telegram.add_handler(CommandHandler('help', help))
     telegram.add_handler(CommandHandler("languages", trained_languages_of_model))
     telegram.add_handler(CommandHandler("accents", trained_accents_of_model))
     telegram.add_handler(CallbackQueryHandler(language_callback, pattern='^(en|es|fr|hy)$'))
     telegram.add_handler(CallbackQueryHandler(change_language_callback, pattern='^change_language$'))
+    telegram.add_handler(CallbackQueryHandler(trained_languages_of_model, pattern='trained_languages_of_model'))
+    telegram.add_handler(CallbackQueryHandler(trained_accents_of_model, pattern='trained_accents_of_model'))
     telegram.add_handler(CallbackQueryHandler(back_callback, pattern='^back$'))
-    telegram.add_handler(CallbackQueryHandler(about_callback, pattern='^help$'))
+    telegram.add_handler(CallbackQueryHandler(about_callback, pattern='^about$'))
+    telegram.add_handler(CallbackQueryHandler(help_callback, pattern='^help$'))
     telegram.add_handler(MessageHandler(Filters.audio, handle_audio))
     telegram.add_handler(MessageHandler(Filters.voice,
                                         lambda update, context:
