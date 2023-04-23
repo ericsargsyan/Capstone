@@ -3,7 +3,7 @@ import telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
-from list_of_replies import *
+from telegramBot.list_of_replies import *
 from infer import detect_spoken_language_or_accent
 from model import AudioModel
 from utils import ogg_to_wav
