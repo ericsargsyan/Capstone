@@ -13,6 +13,11 @@ about = {'en': 'About Me 💬',
          'fr': 'Sur Moi 💬',
          'hy': 'Իմ մասին 💬'}
 
+helps = {'en': 'Help ❓',
+         'es': 'Ayuda ❓',
+         'fr': 'Aide ❓',
+         'hy': 'Օգնություն ❓'}
+
 change_language = {'en': 'Please select your language',
                    'es': 'Por favor seleccione su idioma',
                    'fr': 'Veuillez sélectionner votre langue',
@@ -76,22 +81,78 @@ help_text = {'en': "Here are the commands list. 🤖\n\n"
                    "/help - Օգնություն\n"
              }
 
-trained_languages = {'en': 'English, French, German, Spanish, Catalan, Belarusian',
-                     'es': 'Inglés, Francés, Alemán, Español, Catalán, Bielorruso',
-                     'fr': 'Anglais, Français, Allemand, Espagnol, Catalan, Biélorusse',
-                     'hy': 'Անգլերեն, Ֆրանսերեն, Գերմաներեն, Իսպաներեն, Կատալոներեն, Բելառուսերեն'}
+main_menu_train_languages = {'en': 'Trained Languages 🌎',
+                             'es': 'Idiomas entrenados 🌎',
+                             'fr': 'Langues entraînés 🌎',
+                             'hy': 'Ուսուցանված լեզուներ 🌎'}
 
-trained_accents = {'en': "American English, British English, India and South Asia (India, Pakistan, Sri Lanka),"
-                         "Canadian English, Australian English, German English",
-                   'es': 'Inglés americano, inglés británico, India y el sur de Asia (India, Pakistán, Sri Lanka),'
-                         'Inglés canadiense, inglés australiano, inglés alemán',
-                   'fr': 'Anglais américain, anglais britannique, Inde et Asie du Sud (Inde, Pakistan, Sri Lanka)'
-                         'Anglais canadien, anglais australien, anglais allemand',
-                   'hy': 'Ամերիկյան անգլերեն, բրիտանական անգլերեն, Հնդկաստան և Հարավային Ասիա '
-                         '(Հնդկաստան, Պակիստան, Շրի Լանկա), Կանադական անգլերեն, '
-                         'ավստրալիական անգլերեն, գերմանական անգլերեն'}
+main_menu_train_accents = {'en': 'Trained Accents 🗣️',
+                           'es': 'Acentos entrenados 🗣️',
+                           'fr': 'Accents entraînés 🗣️',
+                           'hy': 'Ուսուցանված Բարբառներ 🗣️'}
 
-train_reply = {'en': 'The following languages have currently been trained:',
-               'es': 'Actualmente se han capacitado los siguientes idiomas:',
-               'fr': 'Les langues suivantes ont actuellement été formées :',
-               'hy': 'Ներկայումս սովորել եմ հետևյալ լեզուները:'}
+pretrained_languages = {
+                   'en': ['English 🇬🇧',
+                          'French 🇫🇷',
+                          'Italian 🇮🇹',
+                          'German 🇩🇪',
+                          'Spanish 🇪🇸',
+                          'Catalan ',
+                          'Belarusian 🇧🇾'],
+                   'es': ['Inglés 🇬🇧',
+                          'Francés 🇫🇷',
+                          'Italiano 🇮🇹',
+                          'Alemán 🇩🇪',
+                          'Español 🇪🇸',
+                          'Catalán ',
+                          'Bielorruso 🇧🇾'],
+                   'fr': ['Anglais 🇬🇧',
+                          'Français 🇫🇷',
+                          'Italien 🇮🇹',
+                          'Allemand 🇩🇪',
+                          'Espagnol 🇪🇸',
+                          'Catalan ',
+                          'Biélorusse 🇧🇾'],
+                   'hy': ['Անգլերեն 🇬🇧',
+                          'Ֆրանսերեն 🇫🇷',
+                          'Իտալերեն 🇮🇹',
+                          'Գերմաներեն 🇩🇪',
+                          'Իսպաներեն 🇪🇸',
+                          'Կատալոներեն ',
+                          'Բելառուսերեն 🇧🇾']}
+
+pretrained_accents = {
+                   'en': ["American English 🇺🇸",
+                          "British English 🇬🇧",
+                          "India 🇮🇳, Pakistan 🇵🇰, Sri Lanka 🇱🇰",
+                          "Canadian English 🇨🇦",
+                          "Australian English 🇦🇺",
+                          "German English 🇩🇪"],
+                   'es': ['Inglés americano 🇺🇸, ',
+                          'Inglés británico 🇬🇧, ',
+                          'India 🇮🇳, Pakistán 🇵🇰, Sri Lanka 🇱🇰',
+                          'Inglés canadiense 🇨🇦',
+                          'Inglés australiano 🇦🇺',
+                          'Inglés alemán 🇩🇪'],
+                   'fr': ['Anglais américain 🇺🇸',
+                          'Anglais britannique 🇬🇧',
+                          'Inde 🇮🇳, Pakistan 🇵🇰, Sri Lanka 🇱🇰',
+                          'Anglais canadien 🇨🇦',
+                          'Anglais australien 🇦🇺',
+                          'Anglais allemand 🇩🇪'],
+                   'hy': ['Ամերիկյան անգլերեն 🇺🇸',
+                          'Բրիտանական անգլերեն 🇬🇧',
+                          'Հնդկաստան 🇮🇳, Պակիստան 🇵🇰, Շրի Լանկա 🇱🇰',
+                          'Կանադական անգլերեն 🇨🇦',
+                          'Ավստրալիական անգլերեն 🇦🇺',
+                          'Գերմանական անգլերեն 🇩🇪']}
+
+train_lang_reply = {'en': 'The following languages have currently been trained:',
+                    'es': 'Actualmente se han capacitado los siguientes idiomas:',
+                    'fr': 'Les langues suivantes ont actuellement été formées :',
+                    'hy': 'Ներկայումս սովորել եմ հետևյալ լեզուները:'}
+
+train_accent_reply = {'en': 'The following acccents of english have currently been trained:',
+                      'es': 'Actualmente se han capacitado los siguientes idiomas:',
+                      'fr': 'Les langues suivantes ont actuellement été formées :',
+                      'hy': 'Ներկայումս սովորել եմ հետևյալ լեզուները:'}
