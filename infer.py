@@ -74,6 +74,5 @@ if __name__ == "__main__":
     speech = task.split('_')[0]
 
     for index, y in enumerate(torch.argmax(y_prob, dim=1)):
-        print(y)
         label = list(filter(lambda x: encodings[x] == y, encodings))[0]
         print(f'Spoken {speech} of {audio_names[index]}: {label}')
