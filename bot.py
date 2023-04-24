@@ -46,13 +46,25 @@ def start(update, context):
 
 
 def help_callback(update, context):
-    # chat_id = update.callback_query.message.chat_id
-    # language = context.user_data.get('language', 'en')
+    chat_id = update.callback_query.message.chat_id
+    language = context.user_data.get('language', 'en')
 
     query = update.callback_query
     query.answer()
-    message = "How can I help you?"
-    query.edit_message_text(text=message)
+
+    message = help_text[language]
+
+    keyboard = [
+        [InlineKeyboardButton(back_texts[language], callback_data='back')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    # query.edit_message_text(text=message)
+
+    context.bot.edit_message_text(chat_id=query.message.chat_id,
+                                  message_id=query.message.message_id,
+                                  text=message,
+                                  reply_markup=reply_markup)
 
 
 def language_callback(update, context):
