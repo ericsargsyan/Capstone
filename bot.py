@@ -19,7 +19,7 @@ def arg_parser():
     return parser.parse_args()
 
 
-TOKEN = '6134670581:AAFm6yE0iasDgJqpp0zUIKwIOS7pvraLXFE'
+TOKEN = '6069729257:AAEv27ZPk18AQ8MOPMrjSxilXi3wbD6laQs'
 bot = telegram.Bot(token=TOKEN)
 
 
