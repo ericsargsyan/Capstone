@@ -55,32 +55,6 @@ voice_received = {'en': 'Voice message received. 🎤',
                   'fr': "Message vocal reçu. 🎤",
                   'hy': 'Ձայնային հաղորդագրություն ստացվել է:🎤'}
 
-# help_text = {'en': "Here are the commands list. 🤖\n\n"
-#                    "/start - Start the bot\n"
-#                    "/support - How to control me\n"
-#                    "/languages - Trained languages\n"
-#                    "/accents - Trained accents\n"
-#                    "/help - Get help\n",
-#              'es': 'Aquí está la lista de comandos. 🤖\n\n'
-#                    "/start - Iniciar el bot\n"
-#                    "/support - How to control me\n"
-#                    "/languages - Idiomas entrenados\n"
-#                    "/accents - Acentos entrenados\n"
-#                    "/help - Consigue ayuda\n",
-#              'fr': 'Voici la liste des commandes. 🤖\n\n'
-#                    "/start - Démarrer le robot\n"
-#                    "/support - Comment me contrôler\n"
-#                    "/languages - Langues enseignées\n"
-#                    "/accents - Accents entraînés\n"
-#                    "/help - Obtenir de l'aide\n",
-#              'hy': "Ահա հրամանների ցանկը: 🤖\n\n"
-#                    "/start - Սկսել բոտը.\n"
-#                    "/support - Ինչպես կառավարել ինձ.\n"
-#                    "/languages - Սովորած  լեզուներ\n"
-#                    "/accents - Սովորած  Բարբառներ\n"
-#                    "/help - Օգնություն\n"
-#              }
-
 main_menu_train_languages = {'en': 'Trained Languages 🌎',
                              'es': 'Idiomas entrenados 🌎',
                              'fr': 'Langues entraînés 🌎',
@@ -142,7 +116,7 @@ pretrained_accents = {
            'Anglais allemand 🇩🇪'],
     'hy': ['Ամերիկյան անգլերեն 🇺🇸',
            'Բրիտանական անգլերեն 🇬🇧',
-           'Հնդկական🇮🇳,Պակիստան🇵🇰,Շրի Լանկա🇱🇰',
+           'Հնդկական🇮🇳 և միջին Ասիա',
            'Կանադական անգլերեն 🇨🇦',
            'Ավստրալիական անգլերեն 🇦🇺',
            'Գերմանական անգլերեն 🇩🇪']}
@@ -178,7 +152,6 @@ help_text = {'en': "By simply tapping on the /start command, you'll be directed 
              # "Բացի այդ, ուղարկելով ինձ ձայնային հաղորդագրություն,"
                    "Բացի այդ, ազատ զգացեք ինձ ձայնային հաղորդագրություններ ուղարկել,"
                    "քանի որ ես յուրահատուկ ունակություն ունեմ՝ ճշգրիտ սահմանել լեզուն ու բարբառը"
-
              }
 
 languages_information = {
@@ -206,72 +179,74 @@ languages_information = {
                            'the Italian language, totaling *276,5* hours of recorded speech.'
                      },
                 'es':
-                    {'Inglés 🇬🇧': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de 5,741,995'
-                                   'voces, con un total de 7975 horas de habla grabada. De estas, 1,585,061 voces'
-                                   'pertenecen al idioma inglés, con un total de 2202 horas de habla grabada.',
-                     'Español 🇪🇸': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de 5,741,995'
-                                   'voces, con un total de 7975 horas de habla grabada. De estas, 274,835 voces '
+                    {'Inglés 🇬🇧': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de *5,741,995*'
+                                   'voces, con un total de 7975 horas de habla grabada. De estas, *1,585,061* voces'
+                                   'pertenecen al idioma inglés, con un total de *2202* horas de habla grabada.',
+                     'Español 🇪🇸': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de *5,741,995*'
+                                   'voces, con un total de *7975* horas de habla grabada. De estas, *274,835* voces '
                                    'pertenecen al idioma español, con un total de 382 horas de habla grabada.',
-                     'Francés 🇫🇷': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de 5,741,995 '
-                                   'voces, con un total de 7975 horas de habla grabada. De estas, 619,873 voces '
+                     'Francés 🇫🇷': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de *5,741,995*'
+                                   'voces, con un total de *7975* horas de habla grabada. De estas, *619,873* voces'
                                    'pertenecen al idioma francés, con un total de 861 horas de habla grabada.',
-                     'Bielorruso 🇧🇾': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de 5,741,995'
-                                      'voces, con un total de 7975 horas de habla grabada. De estas, 905,593 voces '
-                                      'pertenecen al idioma francés, con un total de 1258 horas de habla grabada.',
-                     'Catalán': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de 5,741,995'
-                                'voces, con un total de 7975 horas de habla grabada. De estas, 1,057,425 voces'
-                                'pertenecen al idioma francés, con un total de 1469 horas de habla grabada.',
-                     'Alemán 🇩🇪': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de 5,741,995'
-                                  'voces, con un total de 7975 horas de habla grabada. De estas, 803,773 voces '
-                                  'pertenecen al idioma francés, con un total de 1116 horas de habla grabada.',
-                     'Italiano 🇮🇹': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de 5,741,995'
-                                    'voces, con un total de 7975 horas de habla grabada. De estas, 199,126 voces '
-                                    'pertenecen al idioma francés, con un total de 276.5 horas de habla grabada.'
+                     'Bielorruso 🇧🇾': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de *5,741,995*'
+                                      'voces, con un total de *7975* horas de habla grabada. De estas, *905,593* voces'
+                                      'pertenecen al idioma francés, con un total de *1258* horas de habla grabada.',
+                     'Catalán': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de *5,741,995*'
+                                'voces, con un total de *7975* horas de habla grabada. De estas, *1,057,425* voces'
+                                'pertenecen al idioma francés, con un total de *1469* horas de habla grabada.',
+                     'Alemán 🇩🇪': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de *5,741,995*'
+                                  'voces, con un total de *7975* horas de habla grabada. De estas, *803,773* voces '
+                                  'pertenecen al idioma francés, con un total de *1116* horas de habla grabada.',
+                     'Italiano 🇮🇹': 'El modelo de audio ha sido entrenado en un gran conjunto de datos de *5,741,995*'
+                                    'voces, con un total de *7975* horas de habla grabada. De estas, *199,126* voces '
+                                    'pertenecen al idioma francés, con un total de *276.5* horas de habla grabada.'
                      },
                 'fr':
-                    {'Anglais 🇬🇧': 'Le modèle audio a été entraîné sur un grand ensemble de données de 5,741,995 voix,'
-                                    'avec un total de 7,975 heures d\'enregistrement. Parmi celles-ci, 1,585,061 voix'
-                                    'appartiennent à la langue française, totalisant 2202 heures d\'enregistrement.',
-                     'Français 🇫🇷': 'Le modèle audio a été entraîné sur un grand ensemble de données de 5,741,995 voix,'
-                                    'avec un total de 7,975 heures d\'enregistrement. Parmi celles-ci, 619,873 voix'
-                                    'appartiennent à la langue française, totalisant 861 heures d\'enregistrement.',
-                     'Espagnol 🇪🇸': 'Le modèle audio a été entraîné sur un grand ensemble de données de 5,741,995 voix,'
-                                   'avec un total de 7 975 heures d\'enregistrement. Parmi celles-ci, 274,835 voix'
-                                   'appartiennent à la langue espagnole, totalisant 382 heures d\'enregistrement.',
-                     'Biélorusse 🇧🇾': 'Le modèle audio a été entraîné sur un grand ensemble de données de 5,741,995 voix,'
-                                     'avec un total de 7,975 heures d\'enregistrement. Parmi celles-ci, 905,593 voix'
+                    {'Anglais 🇬🇧': 'Le modèle audio a été entraîné sur un grand ensemble de données de *5,741,995* voix,'
+                                    'avec un total de *7975* heures d\'enregistrement. Parmi celles-ci, *1,585,061* voix'
+                                    'appartiennent à la langue française, totalisant *2202* heures d\'enregistrement.',
+                     'Français 🇫🇷': 'Le modèle audio a été entraîné sur un grand ensemble de données de *5,741,995* voix,'
+                                    'avec un total de *7975* heures d\'enregistrement. Parmi celles-ci, *619,873* voix'
+                                    'appartiennent à la langue française, totalisant *861* heures d\'enregistrement.',
+                     'Espagnol 🇪🇸': 'Le modèle audio a été entraîné sur un grand ensemble de données de *5,741,995* voix,'
+                                   'avec un total de *7975* heures d\'enregistrement. Parmi celles-ci, *274,835* voix'
+                                   'appartiennent à la langue espagnole, totalisant *382* heures d\'enregistrement.',
+                     'Biélorusse 🇧🇾': 'Le modèle audio a été entraîné sur un grand ensemble de données de *5,741,995* voix,'
+                                     'avec un total de *7975* heures d\'enregistrement. Parmi celles-ci, *905,593* voix'
                                      'appartiennent à la langue biélorusse, totalisant 1 258 heures d\'enregistrement.',
-                     'Catalan': 'Le modèle audio a été entraîné sur un grand ensemble de données de 5 741 995 voix, '
-                               'avec un total de 7 975 heures d\'enregistrement. Parmi celles-ci, 1 057 425 voix '
-                               'appartiennent à la langue catalane, totalisant 1 469 heures d\'enregistrement.',
-                     'Allemand 🇩🇪': 'Le modèle audio a été entraîné sur un grand ensemble de données de 5,741,995 voix,'
-                                  'avec un total de 7975 heures d\'enregistrement. Parmi celles-ci, 803,773 voix'
-                                  'appartiennent à la langue allemande, totalisant 1 116 heures d\'enregistrement.',
-                     'Italien 🇮🇹': 'Le modèle audio a été entraîné sur un grand ensemble de données de 5,741,995 voix, '
-                                  'avec un total de 276.5 heures d\'enregistrement. Parmi celles-ci, 199,126 voix '
-                                  'appartiennent à la langue italienne, totalisant 2 202 heures d\'enregistrement.'
+                     'Catalan': 'Le modèle audio a été entraîné sur un grand ensemble de données de *5,741,995* voix,'
+                               'avec un total de *7975* heures d\'enregistrement. Parmi celles-ci, *1,057,425* voix'
+                               'appartiennent à la langue catalane, totalisant *1469* heures d\'enregistrement.',
+                     'Allemand 🇩🇪': 'Le modèle audio a été entraîné sur un grand ensemble de données de *5,741,995* voix,'
+                                  'avec un total de *7975* heures d\'enregistrement. Parmi celles-ci, *803,773* voix'
+                                  'appartiennent à la langue allemande, totalisant *1116* heures d\'enregistrement.',
+                     'Italien 🇮🇹': 'Le modèle audio a été entraîné sur un grand ensemble de données de *5,741,995* voix,'
+                                  'avec un total de *2202* heures d\'enregistrement. Parmi celles-ci, *199,126* voix '
+                                  'appartiennent à la langue italienne, totalisant *276.5* heures d\'enregistrement.'
                      },
                 'hy':
-                    {'Անգլերեն 🇬🇧': 'Աուդիո մոդելը ուսուղանվել է 5,741,995 ձայնի տվյալների հիման վրա,'
-                                    'ընդհանուր առմամբ 7975 ձայնագրված ժամով։ Դրանցից 1,585,061 պատկանում է '
-                                    'անգլերեն լեզվին, 2202 ժամ ձայանգրությունով։',
-                     'Ֆրանսերեն 🇫🇷': 'Աուդիո մոդելը ուսուղանվել է 5,741,995 ձայնի տվյալների հիման վրա,'
-                                      'ընդհանուր առմամբ 7975 ձայնագրված ժամով։ Դրանցից 619,873 պատկանում է '
-                                      'անգլերեն լեզվին, 861 ժամ ձայանգրությունով։',
-                     'Իտալերեն 🇮🇹': 'Աուդիո մոդելը ուսուղանվել է 5,741,995 ձայնի տվյալների հիման վրա,'
-                                     'ընդհանուր առմամբ 7975 ձայնագրված ժամով։ Դրանցից 199,126 պատկանում է '
-                                     'անգլերեն լեզվին, 276.5 ժամ ձայանգրությունով։',
-                     'Գերմաներեն 🇩🇪': 'Աուդիո մոդելը ուսուղանվել է 5,741,995 ձայնի տվյալների հիման վրա,'
-                                       'ընդհանուր առմամբ 7975 ձայնագրված ժամով։ Դրանցից 803,773 պատկանում է '
-                                       'անգլերեն լեզվին, 1116 ժամ ձայանգրությունով։',
-                     'Իսպաներեն 🇪🇸': 'Աուդիո մոդելը ուսուղանվել է 5,741,995 ձայնի տվյալների հիման վրա,'
-                                      'ընդհանուր առմամբ 7975 ձայնագրված ժամով։ Դրանցից 274,835 պատկանում է '
-                                      'անգլերեն լեզվին, 382 ժամ ձայանգրությունով։',
-                     'Կատալոներեն': 'Աուդիո մոդելը ուսուղանվել է 5,741,995 ձայնի տվյալների հիման վրա,'
-                                     'ընդհանուր առմամբ 7975 ձայնագրված ժամով։ Դրանցից 1,057,425 պատկանում է '
-                                     'անգլերեն լեզվին, 1469 ժամ ձայանգրությունով։',
-                     'Բելառուսերեն 🇧🇾': 'Աուդիո մոդելը ուսուղանվել է 5,741,995 ձայնի տվյալների հիման վրա,'
-                                        'ընդհանուր առմամբ 7975 ձայնագրված ժամով։ Դրանցից 905,593 պատկանում է '
-                                        'անգլերեն լեզվին, 1258 ժամ ձայանգրությունով։'
+                    {'Անգլերեն 🇬🇧': 'Աուդիո մոդելը ուսուղանվել է *5,741,995* ձայնի տվյալների հիման վրա,'
+                                    'ընդհանուր առմամբ *7975* ձայնագրված ժամով։ Դրանցից *1,585,061* պատկանում է'
+                                    'անգլերեն լեզվին, *2202* ժամ ձայանգրությունով։',
+                     'Ֆրանսերեն 🇫🇷': 'Աուդիո մոդելը ուսուղանվել է *5,741,995* ձայնի տվյալների հիման վրա,'
+                                      'ընդհանուր առմամբ *7975* ձայնագրված ժամով։ Դրանցից *619,873* պատկանում է'
+                                      'անգլերեն լեզվին, *861* ժամ ձայանգրությունով։',
+                     'Իտալերեն 🇮🇹': 'Աուդիո մոդելը ուսուղանվել է *5,741,995* ձայնի տվյալների հիման վրա,'
+                                     'ընդհանուր առմամբ *7975* ձայնագրված ժամով։ Դրանցից *199,126* պատկանում է'
+                                     'անգլերեն լեզվին, *276.5* ժամ ձայանգրությունով։',
+                     'Գերմաներեն 🇩🇪': 'Աուդիո մոդելը ուսուղանվել է *5,741,995* ձայնի տվյալների հիման վրա,'
+                                       'ընդհանուր առմամբ *7975* ձայնագրված ժամով։ Դրանցից *803,773* պատկանում է'
+                                       'անգլերեն լեզվին, *1116* ժամ ձայանգրությունով։',
+                     'Իսպաներեն 🇪🇸': 'Աուդիո մոդելը ուսուղանվել է *5,741,995* ձայնի տվյալների հիման վրա,'
+                                      'ընդհանուր առմամբ *7975* ձայնագրված ժամով։ Դրանցից *274,835* պատկանում է'
+                                      'անգլերեն լեզվին, *382* ժամ ձայանգրությունով։',
+                     'Կատալոներեն': 'Աուդիո մոդելը ուսուղանվել է *5,741,995* ձայնի տվյալների հիման վրա,'
+                                     'ընդհանուր առմամբ *7975* ձայնագրված ժամով։ Դրանցից *1,057,425* պատկանում է'
+                                     'անգլերեն լեզվին, *1469 ժամ ձայանգրությունով։',
+                     'Բելառուսերեն 🇧🇾': 'Աուդիո մոդելը ուսուղանվել է *5,741,995* ձայնի տվյալների հիման վրա,'
+                                        'ընդհանուր առմամբ *7975* ձայնագրված ժամով։ Դրանցից *905,593* պատկանում է'
+                                        'անգլերեն լեզվին, *1258* ժամ ձայանգրությունով։'
                      }
             }
+
+accent_information = {}
