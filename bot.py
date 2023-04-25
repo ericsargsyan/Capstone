@@ -8,7 +8,9 @@ from infer import detect_spoken_language_or_accent
 from model import AudioModel
 from utils import ogg_to_wav
 from dataflow.utils import read_yaml, format_audio
+# from telegram.utils.helpers import escape
 import argparse
+from telegram import ParseMode
 
 
 def arg_parser():
@@ -40,9 +42,9 @@ def start(update, context):
     context.bot.send_message(chat_id=chat_id, text=message, reply_markup=reply_markup)
 
 
-# def help(update, context):
-#     language = context.user_data.get('language', 'en')
-#     update.message.reply_text(help_text[language])
+def help_command(update, context):
+    language = context.user_data.get('language', 'en')
+    update.message.reply_text(help_text[language])
 
 
 def help_callback(update, context):
@@ -209,7 +211,7 @@ def trained_languages_of_model(update, context):
     keyboard = []
     row = []
     for lang in trained_languages:
-        row.append(InlineKeyboardButton(lang, callback_data=lang))
+        row.append(InlineKeyboardButton(lang, callback_data=f'selected_train_language:{lang}'))
         if len(row) == 2:
             keyboard.append(row)
             row = []
@@ -217,7 +219,7 @@ def trained_languages_of_model(update, context):
         keyboard.append(row)
 
     keyboard.append([InlineKeyboardButton(back_texts[language], callback_data='back')])
-
+    # context.user_data['current_callback_data'] = 'trained_languages_of_model'
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(text=train_lang_reply[language], reply_markup=reply_markup)
 
@@ -236,6 +238,18 @@ def trained_accents_of_model(update, context):
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(text=train_accent_reply[language], reply_markup=reply_markup)
+
+
+def selected_train_language(update, context):
+    query = update.callback_query
+    language = context.user_data.get('language', 'en')
+    selected_language = query.data.split(':')[1]
+
+    lang_info = languages_information[language][selected_language]
+    back_button = InlineKeyboardButton(back_texts[language], callback_data='back')
+    reply_markup = InlineKeyboardMarkup([[back_button]])
+
+    query.edit_message_text(text=lang_info, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
 
 
 if __name__ == '__main__':
@@ -262,7 +276,7 @@ if __name__ == '__main__':
     telegram = updater.dispatcher
 
     telegram.add_handler(CommandHandler('start', start))
-    # telegram.add_handler(CommandHandler('help', help))
+    telegram.add_handler(CommandHandler('help', help_command))
     telegram.add_handler(CommandHandler("languages", trained_languages_of_model))
     telegram.add_handler(CommandHandler("accents", trained_accents_of_model))
     telegram.add_handler(CallbackQueryHandler(language_callback, pattern='^(en|es|fr|hy)$'))
@@ -285,6 +299,7 @@ if __name__ == '__main__':
                                         )
                          )
     telegram.add_handler(MessageHandler(Filters.text, handle_message))
+    telegram.add_handler(CallbackQueryHandler(selected_train_language, pattern='selected_train_language:*'))
 
     updater.start_polling()
     updater.idle()
