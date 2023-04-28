@@ -15,9 +15,11 @@ def read_yaml(path):
 
 def format_audio(current_path, self_samplerate, self_duration, resample):
     data, samplerate = sf.read(current_path)
+
     if len(data.shape) > 1:
         data = data.mean(axis=1)
     resample = (samplerate != self_samplerate)
+
     if resample:
         data = librosa.resample(data, target_sr=self_samplerate, orig_sr=samplerate)
 
@@ -60,4 +62,3 @@ def data_spliter(arr, split_size):
     test_indexes = indexes[int(split_size * len(arr)):]
 
     return arr[train_indexes], arr[test_indexes]
-
