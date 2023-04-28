@@ -10,23 +10,29 @@ from utils import get_best_checkpoint
 
 def arg_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataflow_config_path',
-                        type=str,
-                        required=True)
-    # parser.add_argument('--model_config_path',
-    #                     type=str,
-    #                     required=True)
-    parser.add_argument('--check_path',
-                        type=str,
-                        required=True)
-    # parser.add_argument('--audios_dir',
-    #                     type=str,
-    #                     required=True)
+    parser.add_argument('--dataflow_config_path', type=str, required=True)
+    parser.add_argument('--version', type=str, required=True)
 
     return parser.parse_args()
 
 
-def detect_spoken_language_or_accent(data, model, encodings):
+# def detect_spoken_language(data, language_model, language_encodings):
+#     data = torch.tensor(data, dtype=torch.float32).view(1, -1)
+#     y_prob_lang = model(data)
+#     langauge = list(filter(lambda x: encodings[x] == torch.argmax(y_prob_lang, dim=1).squeeze(), encodings))[0]
+#
+#     return langauge
+#
+#
+# def detect_spoken_dialect(data, dialect_model, dialect_encodings):
+#     data = torch.tensor(data, dtype=torch.float32).view(1, -1)
+#     y_prob_dialect = model(data)
+#     dialect = list(filter(lambda x: encodings[x] == torch.argmax(y_prob_dialect, dim=1).squeeze(), encodings))[0]
+#
+#     return dialect
+
+
+def detect_spoken_language_and_dialect(data, model, encodings):
     data = torch.tensor(data, dtype=torch.float32).view(1, -1)
     y_prob = model(data)
     label = list(filter(lambda x: encodings[x] == torch.argmax(y_prob, dim=1).squeeze(), encodings))[0]
@@ -59,7 +65,7 @@ if __name__ == "__main__":
 
     data = torch.cat(audios, dim=0)
 
-    checkpoint_path = get_best_checkpoint(model_config['log_dir'][task], parser.check_path)
+    checkpoint_path = get_best_checkpoint(model_config['log_dir'][task], parser.version)
 
     model = AudioModel.load_from_checkpoint(checkpoint_path=checkpoint_path,
                                             model_config=read_yaml('./configs/model/net.yaml'),
