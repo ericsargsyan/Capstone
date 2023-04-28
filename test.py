@@ -21,9 +21,9 @@ if __name__ == "__main__":
 
     test_dataset = AudioDataset(config['data'][task]['test_path'], config['encodings'][task], task)
     test_dataloader = DataLoader(test_dataset, batch_size=config['dataloader']['batch_size'],
-                                 shuffle=True, num_workers=config['dataloader']['num_workers'])
+                                 shuffle=False, num_workers=config['dataloader']['num_workers'])
 
-    checkpoint_path = '/home/capstone/Desktop/Krisp/Capstone/exp/version_18/checkpoints/epoch=00-val_epoch_accuracy=0.150000.ckpt'
+    checkpoint_path = config['checkpoint_path'][task.split('_')[0]]
 
     model = AudioModel.load_from_checkpoint(checkpoint_path=checkpoint_path,
                                             model_config=read_yaml('./configs/model/net.yaml'),
