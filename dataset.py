@@ -11,13 +11,13 @@ class AudioDataset(Dataset):
         # self.data = pd.merge(self.data, self.labels, left_on=task.split('_')[0], right_index=True)
         column_name = task.split('_')[0]
         self.data['label'] = self.data[column_name].apply(lambda x: label[x] if x in label else max(label.values()))
+        self.y = torch.tensor(self.data['label'], dtype=torch.long)
 
     def __getitem__(self, idx):
         waveform, _ = torchaudio.load(self.data['path'][idx])
         x = waveform.view(-1)
-        y = torch.tensor(self.data['label'], dtype=torch.long)
 
-        return x, y[idx]
+        return x, self.y[idx]
 
     def __len__(self):
         return len(self.data)
