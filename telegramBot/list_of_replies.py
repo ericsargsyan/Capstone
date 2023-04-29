@@ -26,7 +26,7 @@ not_audio_message = {'en': 'Sorry, I can only process audio files 🎵.',
                      'es': 'Lo siento, solo puedo procesar archivos de audio 🎵.',
                      'fr': 'Désolé, je ne peux traiter que les fichiers audio 🎵.',
                      'hy': 'Կներեք, ես կարող եմ մշակել միայն աուդիո ֆայլեր 🎵։',
-                     'ru': 'извините, но я могу обработывать только аудиофайлы 🎵'}
+                     'ru': 'Извините, но я могу обработывать только аудиофайлы 🎵'}
 
 invalid_command = {'en': 'Invalid command 🚫.',
                    'es': 'Comando no válida 🚫.',
