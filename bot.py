@@ -76,13 +76,15 @@ def language_callback(update, context):
     context.user_data['language'] = language
 
     if language == 'en':
-        greeting = "Hello, {}! My name is VoiceSense."
+        greeting = 'Hello, {}! My name is VoiceSense.'
     elif language == 'es':
-        greeting = "¡Hola, {}! Mi nombre es VoiceSense."
+        greeting = '¡Hola, {}! Mi nombre es VoiceSense.'
     elif language == 'hy':
         greeting = 'Բարեւ Ձեզ, {}! Իմ անունը VoiceSense է:'
     elif language == 'fr':
         greeting = "Bonjour, {}! Je m'appelle VoiceSense."
+    # elif language == 'ru':
+    #     greeting = 'Привет, {}! Меня зовут VoiceSense.'
 
     user_name = query.from_user.first_name
     message = greeting.format(user_name)
@@ -109,6 +111,7 @@ def change_language_callback(update, context):
          InlineKeyboardButton("Español 🇪🇸", callback_data='es')],
         [InlineKeyboardButton("Հայերեն 🇦🇲", callback_data='hy'),
          InlineKeyboardButton("Français 🇫🇷", callback_data='fr')],
+        # [InlineKeyboardButton("Русский 🇷🇺", callback_data='ru')],
         [InlineKeyboardButton(back_texts[language], callback_data='back')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -128,6 +131,8 @@ def back_callback(update, context):
         message = f'Բարեւ Ձեզ, {query.from_user.first_name}! Իմ անունը VoiceSense է:'
     elif language == 'fr':
         message = f"Bonjour, {query.from_user.first_name}! Je m'appelle VoiceSense."
+    # elif language == 'ru':
+    #     message = f'Привет, {query.from_user.first_name}! меня зовут VoiceSense է:'
 
     keyboard = [
         [InlineKeyboardButton(languages[language], callback_data='change_language')],
