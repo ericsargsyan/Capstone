@@ -4,25 +4,57 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
 from telegramBot.list_of_replies import *
-from infer import detect_spoken_language_or_accent
+from infer import detect_spoken_language_and_dialect
 from model import AudioModel
-from utils import ogg_to_wav
+from utils import ogg_to_wav, handle_same_filename
 from dataflow.utils import read_yaml, format_audio
 # from telegram.utils.helpers import escape
 import argparse
 from telegram import ParseMode
+import logging
 
 
 def arg_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config_path',
-                        type=str,
-                        required=True)
+    parser.add_argument('--config_path', type=str, required=True)
+
     return parser.parse_args()
 
 
-TOKEN = token
+logging.basicConfig(filename='bot.log', format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+TOKEN = '6069729257:AAEv27ZPk18AQ8MOPMrjSxilXi3wbD6laQs'
 bot = telegram.Bot(token=TOKEN)
+
+
+# def get_user_info(update):
+#     user = update.message.from_user
+#     name = user.first_name
+#     last_name = user.last_name if user.last_name is not None else ''
+#     last_name = f'_{last_name}' if last_name != '' else last_name
+#     username = user.username if user.username is not None else ''
+#
+#     return name, last_name, username
+
+def get_user_info(update):
+    try:
+        user = update.message.from_user
+        name = user.first_name
+        print(name)
+        last_name = user.last_name if user.last_name is not None else ''
+        last_name = f'_{last_name}' if last_name is not None else last_name
+        username = user.username if user.username is not None else ''
+    except AttributeError:
+        user = update.effective_user
+        name = user.first_name
+        print(name)
+        last_name = user.last_name if user.last_name is not None else ''
+        last_name = f'_{last_name}' if last_name is not None else last_name
+        username = user.username if user.username is not None else ''
+
+    return name, last_name, username
 
 
 def start(update, context):
@@ -34,12 +66,15 @@ def start(update, context):
     keyboard = [
         [InlineKeyboardButton(languages[language], callback_data='change_language')],
         [InlineKeyboardButton(main_menu_train_languages[language], callback_data='trained_languages_of_model')],
-        [InlineKeyboardButton(main_menu_train_accents[language], callback_data='trained_accents_of_model')],
+        [InlineKeyboardButton(main_menu_train_dialects[language], callback_data='trained_dialects_of_model')],
         [InlineKeyboardButton(about[language], callback_data='about')],
         [InlineKeyboardButton(helps[language], callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.send_message(chat_id=chat_id, text=message, reply_markup=reply_markup)
+
+    name, last_name, username = get_user_info(update)
+    logger.info(f" | {user_name}{last_name}@{username if username is not None else ''} - started the BOT\n")
 
 
 def help_command(update, context):
@@ -53,15 +88,12 @@ def help_callback(update, context):
 
     query = update.callback_query
     query.answer()
-
     message = help_text[language]
 
     keyboard = [
         [InlineKeyboardButton(back_texts[language], callback_data='back')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-
-    # query.edit_message_text(text=message)
 
     context.bot.edit_message_text(chat_id=query.message.chat_id,
                                   message_id=query.message.message_id,
@@ -74,17 +106,16 @@ def language_callback(update, context):
     language = query.data
 
     context.user_data['language'] = language
-
     if language == 'en':
-        greeting = 'Hello, {}! My name is VoiceSense.'
+        greeting = "Hello, {}! My name is VoiceSense."
     elif language == 'es':
-        greeting = '¡Hola, {}! Mi nombre es VoiceSense.'
+        greeting = "¡Hola, {}! Mi nombre es VoiceSense."
     elif language == 'hy':
         greeting = 'Բարեւ Ձեզ, {}! Իմ անունը VoiceSense է:'
     elif language == 'fr':
         greeting = "Bonjour, {}! Je m'appelle VoiceSense."
-    # elif language == 'ru':
-    #     greeting = 'Привет, {}! Меня зовут VoiceSense.'
+    elif language == 'ru':
+        greeting = 'Привет, {}! Меня зовут VoiceSense.'
 
     user_name = query.from_user.first_name
     message = greeting.format(user_name)
@@ -92,7 +123,7 @@ def language_callback(update, context):
     keyboard = [
         [InlineKeyboardButton(languages[language], callback_data='change_language')],
         [InlineKeyboardButton(main_menu_train_languages[language], callback_data='trained_languages_of_model')],
-        [InlineKeyboardButton(main_menu_train_accents[language], callback_data='trained_accents_of_model')],
+        [InlineKeyboardButton(main_menu_train_dialects[language], callback_data='trained_dialects_of_model')],
         [InlineKeyboardButton(about[language], callback_data='about')],
         [InlineKeyboardButton(helps[language], callback_data='help')]
     ]
@@ -111,7 +142,7 @@ def change_language_callback(update, context):
          InlineKeyboardButton("Español 🇪🇸", callback_data='es')],
         [InlineKeyboardButton("Հայերեն 🇦🇲", callback_data='hy'),
          InlineKeyboardButton("Français 🇫🇷", callback_data='fr')],
-        # [InlineKeyboardButton("Русский 🇷🇺", callback_data='ru')],
+        [InlineKeyboardButton("Русский 🇷🇺", callback_data='ru')],
         [InlineKeyboardButton(back_texts[language], callback_data='back')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -131,13 +162,13 @@ def back_callback(update, context):
         message = f'Բարեւ Ձեզ, {query.from_user.first_name}! Իմ անունը VoiceSense է:'
     elif language == 'fr':
         message = f"Bonjour, {query.from_user.first_name}! Je m'appelle VoiceSense."
-    # elif language == 'ru':
-    #     message = f'Привет, {query.from_user.first_name}! меня зовут VoiceSense է:'
+    elif language == 'ru':
+        message = f'Здравствуйте, {query.from_user.first_name}! Меня зовут VoiceSense.'
 
     keyboard = [
         [InlineKeyboardButton(languages[language], callback_data='change_language')],
         [InlineKeyboardButton(main_menu_train_languages[language], callback_data='trained_languages_of_model')],
-        [InlineKeyboardButton(main_menu_train_accents[language], callback_data='trained_accents_of_model')],
+        [InlineKeyboardButton(main_menu_train_dialects[language], callback_data='trained_dialects_of_model')],
         [InlineKeyboardButton(about[language], callback_data='about')],
         [InlineKeyboardButton(helps[language], callback_data='help')]
     ]
@@ -159,11 +190,39 @@ def about_callback(update, context):
     context.bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id,
                                   text=message, reply_markup=reply_markup)
 
+    # user = update.effective_user
+    # name = user.first_name
+    # last_name = user.last_name if user.last_name is not None else ''
+    # username = user.username if user.username is not None else ''
+    name, last_name, username = get_user_info(update)
+    logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked the About ME\n")
 
-def handle_audio(update, context):
+
+def handle_audio(update, context, model, path, samplerate, duration, encodings):
     audio_file = context.bot.getFile(update.message.audio.file_id)
     language = context.user_data.get('language', 'en')
+
     update.message.reply_text(voice_received[language])
+    audio_file_extension = audio_file.file_path.split('.')[-1]
+
+    name, last_name, username = get_user_info(update)
+    telegram_user = username if username is not None else f'{name}{last_name}'
+
+    location = os.path.join(path, f'{telegram_user}.{audio_file_extension}')
+    audio_file.download(location)
+    final_destination = handle_same_filename(f'{location.split(".")[0]}.wav')
+
+    os.system(f'ffmpeg -y -hwaccel cuda -i {location} -acodec pcm_s16le -ac 1 -ar 16000 {final_destination}')
+    os.remove(location)
+    data = format_audio(final_destination, self_samplerate=samplerate, resample=False, self_duration=duration)
+
+    spoken_language = detect_spoken_language_and_dialect(data, model, encodings)
+    reply = detected_language[language][spoken_language]
+
+    update.message.reply_text(reply)
+
+    # logger.info(f" | {name}{last_name}@{username if username is not None else ''} sent voice message - "
+    #             f"{os.path.basename(location)} guessed language {spoken_language}\n")
 
 
 def handle_voice(update, context, model, path, samplerate, duration, encodings):
@@ -171,37 +230,71 @@ def handle_voice(update, context, model, path, samplerate, duration, encodings):
     language = context.user_data.get('language', 'en')
     update.message.reply_text(voice_received[language])
 
-    name = update.message.from_user.first_name
-    last_name_or_username = update.message.from_user.last_name or update.message.from_user.username
-    last_name_or_username = '' if last_name_or_username is None else f'_{last_name_or_username}'
+    name, last_name, username = get_user_info(update)
+    telegram_user = username if username != '' else f'{name}{last_name}'
+    print('--------------')
+    print('username', username)
+    print('name', name)
+    print('last_name', last_name)
+    print('telegram_user', telegram_user)
+    print(username)
 
-    ogg_file = f"{name}_{last_name_or_username}.ogg"
-    wav_file = os.path.join(path, f"{name}{last_name_or_username}.wav")
+    location = handle_same_filename(os.path.join(path, f'{telegram_user}.wav'))
+    voice_file.download(os.path.join(path, f'{telegram_user}.ogg'))
+    ogg_to_wav(voice_file.download(os.path.join(path, f'{telegram_user}.ogg')), location)
 
-    # if os.path.exists(wav_file):
-    #     wav_file = f'{wav_file}_{1}'
+    data = format_audio(location, self_samplerate=samplerate, resample=False, self_duration=duration)
+    spoken_language = detect_spoken_language_and_dialect(data, model, encodings)
+    reply = detected_language[language][spoken_language]
 
-    voice_file.download(ogg_file)
+    update.message.reply_text(reply)
+    # print(spoken_language)
 
-    ogg_to_wav(ogg_file, wav_file)
+    logger.info(f" | {name}{last_name}@{username if username is not None else ''} sent voice message - "
+                f"{os.path.basename(location)} guessed language {spoken_language}\n")
 
-    data = format_audio(wav_file,
-                        self_samplerate=samplerate,
-                        resample=False,
-                        self_duration=duration)
 
-    reply = detect_spoken_language_or_accent(data, model, encodings)
+def handle_document(update, context, model, path, samplerate, duration, encodings):
+    doc_file = context.bot.getFile(update.message.document.file_id)
+    language = context.user_data.get('language', 'en')
+
+    update.message.reply_text(voice_received[language])
+    document_file_extension = doc_file.file_path.split('.')[-1]
+
+    audios_extensions = ['wav', 'mp3', 'mp4', 'm4a', 'ogg', 'oga', 'flac']
+
+    name, last_name, username = get_user_info(update)
+    telegram_user = username if username is not None else f'{name}{last_name}'
+
+    if document_file_extension not in audios_extensions:
+        update.message.reply_text(not_audio_message[language])
+        return
+
+    location = os.path.join(path, f'{telegram_user}.{document_file_extension}')
+    doc_file.download(location)
+    final_destination = handle_same_filename(f'{location.split(".")[0]}.wav')
+
+    os.system(f'ffmpeg -y -hwaccel cuda -i {location} -acodec pcm_s16le -ac 1 -ar 16000 {final_destination}')
+
+    if location[-3:] != 'wav':
+        os.remove(location)
+
+    data = format_audio(location, self_samplerate=samplerate, resample=False, self_duration=duration)
+
+    spoken_language = detect_spoken_language_and_dialect(data, model, encodings)
+    reply = detected_language[language][spoken_language]
+
     update.message.reply_text(reply)
 
-    os.remove(ogg_file)
+    # logger.info(f" | {name}{last_name}@{username if username is not None else ''} sent voice message - "
+    #             f"{os.path.basename(location)} guessed language {spoken_language}\n")
 
 
 def handle_message(update, context):
     language = context.user_data.get('language', 'en')
 
-    if update.message.text.startswith('/'):
-        pass
-        # handle_command(update, context)
+    if update.message.text.startswith('/') and update.message.text[1:] not in ['start', 'help']:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=invalid_command[language])
     else:
         response = handle_messages[language]
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
@@ -224,25 +317,29 @@ def trained_languages_of_model(update, context):
         keyboard.append(row)
 
     keyboard.append([InlineKeyboardButton(back_texts[language], callback_data='back')])
-    # context.user_data['current_callback_data'] = 'trained_languages_of_model'
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(text=train_lang_reply[language], reply_markup=reply_markup)
 
+    name, last_name, username = get_user_info(update)
+    logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked Trained Languages\n")
 
-def trained_accents_of_model(update, context):
+
+def trained_dialects_of_model(update, context):
     query = update.callback_query
     language = context.user_data.get('language', 'en')
-
-    trained_accents = pretrained_accents[language]
+    name, last_name, username = get_user_info(update)
+    trained_dialects = pretrained_dialects[language]
 
     keyboard = []
-    for lang in trained_accents:
+    for lang in trained_dialects:
         keyboard.append([InlineKeyboardButton(lang, callback_data=lang)])
 
     keyboard.append([InlineKeyboardButton(back_texts[language], callback_data='back')])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    query.edit_message_text(text=train_accent_reply[language], reply_markup=reply_markup)
+    query.edit_message_text(text=train_dialect_reply[language], reply_markup=reply_markup)
+
+    logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked Trained Dialects\n")
 
 
 def selected_train_language(update, context):
@@ -263,8 +360,16 @@ if __name__ == '__main__':
     path_to_voices = config['telegram_voices']
     model_config = read_yaml(config['model_config_path'])
     task = model_config['task']
-    checkpoint_path = model_config['checkpoint_path']
+    checkpoint_path = model_config['checkpoint_path'][task.split('_')[0]]
     number_of_labels = max(model_config['encodings'][task].values()) + 1
+
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    logger.addHandler(handler)
 
     os.makedirs(config['telegram_voices'], exist_ok=True)
 
@@ -280,29 +385,23 @@ if __name__ == '__main__':
     updater = Updater(token=TOKEN, use_context=True)
     telegram = updater.dispatcher
 
+    parameters = {'path': path_to_voices, 'samplerate': config['samplerate'], 'duration': config['duration'],
+                  'model': model, 'encodings': model_config['encodings'][task]}
     telegram.add_handler(CommandHandler('start', start))
     telegram.add_handler(CommandHandler('help', help_command))
-    telegram.add_handler(CommandHandler("languages", trained_languages_of_model))
-    telegram.add_handler(CommandHandler("accents", trained_accents_of_model))
-    telegram.add_handler(CallbackQueryHandler(language_callback, pattern='^(en|es|fr|hy)$'))
+    telegram.add_handler(CallbackQueryHandler(language_callback, pattern='^(en|es|fr|hy|ru)$'))
     telegram.add_handler(CallbackQueryHandler(change_language_callback, pattern='^change_language$'))
     telegram.add_handler(CallbackQueryHandler(trained_languages_of_model, pattern='trained_languages_of_model'))
-    telegram.add_handler(CallbackQueryHandler(trained_accents_of_model, pattern='trained_accents_of_model'))
+    telegram.add_handler(CallbackQueryHandler(trained_dialects_of_model, pattern='trained_dialects_of_model'))
     telegram.add_handler(CallbackQueryHandler(back_callback, pattern='^back$'))
     telegram.add_handler(CallbackQueryHandler(about_callback, pattern='^about$'))
     telegram.add_handler(CallbackQueryHandler(help_callback, pattern='^help$'))
-    telegram.add_handler(MessageHandler(Filters.audio, handle_audio))
+    telegram.add_handler(MessageHandler(Filters.audio,
+                                        lambda update, context: handle_audio(update, context, **parameters)))
     telegram.add_handler(MessageHandler(Filters.voice,
-                                        lambda update, context:
-                                        handle_voice(update, context,
-                                                     path=path_to_voices,
-                                                     samplerate=config['samplerate'],
-                                                     duration=config['duration'],
-                                                     model=model,
-                                                     encodings=model_config['encodings'][task]
-                                                     )
-                                        )
-                         )
+                                        lambda update, context: handle_voice(update, context, **parameters)))
+    telegram.add_handler(MessageHandler(Filters.document,
+                                        lambda update, context: handle_document(update, context, **parameters)))
     telegram.add_handler(MessageHandler(Filters.text, handle_message))
     telegram.add_handler(CallbackQueryHandler(selected_train_language, pattern='selected_train_language:*'))
 
