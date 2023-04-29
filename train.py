@@ -8,6 +8,7 @@ from pytorch_lightning import Trainer
 from utils import get_last_version_number
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
+import torch
 
 
 def arg_parser():
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     train_dataloader = DataLoader(train_dataset, batch_size=dataloader_config['batch_size'],
                                   shuffle=True, num_workers=config['dataloader']['num_workers'])
     val_dataloader = DataLoader(val_dataset, batch_size=dataloader_config['batch_size'],
-                                shuffle=True, num_workers=config['dataloader']['num_workers'])
+                                shuffle=False, num_workers=config['dataloader']['num_workers'])
 
     model = AudioModel(model_config,
                        config['audio_processor'],
@@ -48,10 +49,20 @@ if __name__ == "__main__":
     logger = TensorBoardLogger(os.path.join(log_dir_path, version_number), name='', version='')
     checkpoints_dir = os.path.join(log_dir_path, version_number, 'checkpoints')
 
+    os.makedirs(os.path.join(log_dir_path, version_number), exist_ok=True)
     checkpoint_callback = ModelCheckpoint(save_top_k=5,
-                                          filename="{epoch:02d}-{val_epoch_accuracy:.6f}",
+                                          filename="{epoch}-{val_epoch_accuracy:.6f}",
                                           dirpath=checkpoints_dir,
-                                          monitor='val_epoch_accuracy')
+                                          monitor='val_epoch_accuracy',
+                                          mode='max',
+                                          save_last=True
+                                          )
+
+    config_copy_command = f"cp {parser.config_path} {os.path.join(log_dir_path, version_number, 'config.yaml')}"
+    os.system(config_copy_command)
+
+    checkpoint = torch.load(config['checkpoint_path'])
+    model.load_state_dict(checkpoint['state_dict'])
 
     trainer = Trainer(callbacks=[checkpoint_callback], logger=logger, **config['pl_trainer'])
     trainer.fit(model, train_dataloader, val_dataloader)
