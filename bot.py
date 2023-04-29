@@ -25,7 +25,7 @@ logging.basicConfig(filename='bot.log', format='%(asctime)s %(message)s', datefm
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-TOKEN = '6069729257:AAEv27ZPk18AQ8MOPMrjSxilXi3wbD6laQs'
+TOKEN = TOKEN
 bot = telegram.Bot(token=TOKEN)
 
 
