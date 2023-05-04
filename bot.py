@@ -354,6 +354,18 @@ def selected_train_language(update, context):
     query.edit_message_text(text=lang_info, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
 
 
+def selected_train_dialect(update, context):
+    query = update.callback_query
+    language = context.user_data.get('language', 'en')
+    selected_language = query.data.split(':')[1]
+
+    dialect_info = dialects_information[language][selected_language]
+    back_button = InlineKeyboardButton(back_texts[language], callback_data='back')
+    reply_markup = InlineKeyboardMarkup([[back_button]])
+
+    query.edit_message_text(text=dialect_info, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
+
+
 if __name__ == '__main__':
     parser = arg_parser()
     config = read_yaml(parser.config_path)
@@ -404,6 +416,7 @@ if __name__ == '__main__':
                                         lambda update, context: handle_document(update, context, **parameters)))
     telegram.add_handler(MessageHandler(Filters.text, handle_message))
     telegram.add_handler(CallbackQueryHandler(selected_train_language, pattern='selected_train_language:*'))
+    telegram.add_handler(CallbackQueryHandler(selected_train_dialect, pattern='selected_train_dialect:*'))
 
     updater.start_polling()
     updater.idle()
