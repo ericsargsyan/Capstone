@@ -2,6 +2,7 @@ from torch.utils.data import Dataset
 import pandas as pd
 import torchaudio
 import torch
+from collections import Counter
 
 
 class AudioDataset(Dataset):
@@ -12,6 +13,9 @@ class AudioDataset(Dataset):
         column_name = task.split('_')[0]
         self.data['label'] = self.data[column_name].apply(lambda x: label[x] if x in label else max(label.values()))
         self.y = torch.tensor(self.data['label'], dtype=torch.long)
+
+    def get_statistics(self):
+        return Counter(self.data['label'])
 
     def __getitem__(self, idx):
         waveform, _ = torchaudio.load(self.data['path'][idx])

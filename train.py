@@ -42,7 +42,8 @@ if __name__ == "__main__":
                        config['sr'],
                        max(config['encodings'][task].values()) + 1,
                        config['learning_rate'],
-                       config['encodings'][task])
+                       config['encodings'][task],
+                       train_dataset.get_statistics())
 
     log_dir_path = config['log_dir'][task]
     version_number = get_last_version_number(log_dir_path)
@@ -61,8 +62,8 @@ if __name__ == "__main__":
     config_copy_command = f"cp {parser.config_path} {os.path.join(log_dir_path, version_number, 'config.yaml')}"
     os.system(config_copy_command)
 
-    checkpoint = torch.load(config['checkpoint_path'])
-    model.load_state_dict(checkpoint['state_dict'])
+    checkpoint = torch.load(config['checkpoint_path'][task.split('_')[0]])
+    model.load_state_dict(checkpoint['state_dict'], strict=False)
 
     trainer = Trainer(callbacks=[checkpoint_callback], logger=logger, **config['pl_trainer'])
     trainer.fit(model, train_dataloader, val_dataloader)
