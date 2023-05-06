@@ -11,7 +11,7 @@ from dataflow.utils import read_yaml, format_audio
 # from telegram.utils.helpers import escape
 import argparse
 from telegram import ParseMode
-import logging
+# import logging
 
 
 def arg_parser():
@@ -21,22 +21,13 @@ def arg_parser():
     return parser.parse_args()
 
 
-logging.basicConfig(filename='bot.log', format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+# logging.basicConfig(filename='bot.log', format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.INFO)
 
-TOKEN = TOKEN
+TOKEN = '6069729257:AAEv27ZPk18AQ8MOPMrjSxilXi3wbD6laQs'
 bot = telegram.Bot(token=TOKEN)
 
-
-# def get_user_info(update):
-#     user = update.message.from_user
-#     name = user.first_name
-#     last_name = user.last_name if user.last_name is not None else ''
-#     last_name = f'_{last_name}' if last_name != '' else last_name
-#     username = user.username if user.username is not None else ''
-#
-#     return name, last_name, username
 
 def get_user_info(update):
     try:
@@ -74,7 +65,7 @@ def start(update, context):
     context.bot.send_message(chat_id=chat_id, text=message, reply_markup=reply_markup)
 
     name, last_name, username = get_user_info(update)
-    logger.info(f" | {user_name}{last_name}@{username if username is not None else ''} - started the BOT\n")
+    # logger.info(f" | {user_name}{last_name}@{username if username is not None else ''} - started the BOT\n")
 
 
 def help_command(update, context):
@@ -173,7 +164,8 @@ def back_callback(update, context):
         [InlineKeyboardButton(helps[language], callback_data='help')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    context.bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id,
+    context.bot.edit_message_text(chat_id=query.message.chat_id,
+                                  message_id=query.message.message_id,
                                   text=message,
                                   reply_markup=reply_markup)
 
@@ -194,8 +186,8 @@ def about_callback(update, context):
     # name = user.first_name
     # last_name = user.last_name if user.last_name is not None else ''
     # username = user.username if user.username is not None else ''
-    name, last_name, username = get_user_info(update)
-    logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked the About ME\n")
+    # name, last_name, username = get_user_info(update)
+    # logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked the About ME\n")
 
 
 def handle_audio(update, context, model, path, samplerate, duration, encodings):
@@ -250,8 +242,8 @@ def handle_voice(update, context, model, path, samplerate, duration, encodings):
     update.message.reply_text(reply)
     # print(spoken_language)
 
-    logger.info(f" | {name}{last_name}@{username if username is not None else ''} sent voice message - "
-                f"{os.path.basename(location)} guessed language {spoken_language}\n")
+    # logger.info(f" | {name}{last_name}@{username if username is not None else ''} sent voice message - "
+    #             f"{os.path.basename(location)} guessed language {spoken_language}\n")
 
 
 def handle_document(update, context, model, path, samplerate, duration, encodings):
@@ -321,7 +313,7 @@ def trained_languages_of_model(update, context):
     query.edit_message_text(text=train_lang_reply[language], reply_markup=reply_markup)
 
     name, last_name, username = get_user_info(update)
-    logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked Trained Languages\n")
+    # logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked Trained Languages\n")
 
 
 def trained_dialects_of_model(update, context):
@@ -339,7 +331,7 @@ def trained_dialects_of_model(update, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(text=train_dialect_reply[language], reply_markup=reply_markup)
 
-    logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked Trained Dialects\n")
+    # logger.info(f" | {name}{last_name}@{username if username is not None else ''} - checked Trained Dialects\n")
 
 
 def selected_train_language(update, context):
@@ -375,13 +367,13 @@ if __name__ == '__main__':
     checkpoint_path = model_config['checkpoint_path'][task.split('_')[0]]
     number_of_labels = max(model_config['encodings'][task].values()) + 1
 
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
+    # handler = logging.StreamHandler()
+    # handler.setLevel(logging.INFO)
 
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-
-    logger.addHandler(handler)
+    # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    # handler.setFormatter(formatter)
+    #
+    # logger.addHandler(handler)
 
     os.makedirs(config['telegram_voices'], exist_ok=True)
 
