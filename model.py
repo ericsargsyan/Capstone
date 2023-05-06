@@ -9,11 +9,11 @@ import numpy as np
 
 
 class AudioModel(pl.LightningModule):
-    def __init__(self, model_config, processor_config, sr, number_of_labels, learning_rate, encodings, dataset_statistics=None, save_probs=True):
+    def __init__(self, model_config, processor_config, sr, number_of_labels, learning_rate, encodings, dataset_statistics=None, save_probs=False):
         super().__init__()
         self.net = SpeakerNet(model_config, number_of_labels)
-        win_length = int(processor_config.pop('win_length') * sr)
-        hop_length = int(processor_config.pop('hop_length') * sr)
+        win_length = int(float(processor_config['win_length']) * sr)
+        hop_length = int(float(processor_config['hop_length']) * sr)
         self.audio_processor = NormalizedMelSpectogram(win_length=win_length,
                                                        hop_length=hop_length,
                                                        window_fn=torch.hann_window,
