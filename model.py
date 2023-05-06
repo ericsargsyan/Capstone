@@ -17,7 +17,8 @@ class AudioModel(pl.LightningModule):
         self.audio_processor = NormalizedMelSpectogram(win_length=win_length,
                                                        hop_length=hop_length,
                                                        window_fn=torch.hann_window,
-                                                       **processor_config)
+                                                       n_mels=processor_config['n_mels'],
+                                                       n_fft=processor_config['n_fft'])
         self.learning_rate = learning_rate
 
         self.loss_fn = nn.CrossEntropyLoss(weight=self.construct_classes_weights(dataset_statistics))
