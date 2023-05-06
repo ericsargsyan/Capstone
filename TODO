@@ -1,10 +1,24 @@
 General
-1. Add test.py + dzmrtel
+1. load optimizer state
+3. save models with f1 score
 2. Add telegram bot + (In Process)
 
 Language
-1. Turn on training +
+1. Turn on training with smaller learning rate
+2. write armenian words generator
+3. get armenian youtube links
+4. download mp4s from youtube
+5. process data (convert to wav, split 5 secs, write csv)
+6. run net on armenian audios, save probability distributions, send them to Narek
 
 Accent
 1. Turn on training +
 2. Add more test/validation for small datas +
+
+
+
+# Checkpoint bug
+# Logs bugs
+# Merge other + other languages, and with some prob use
+
+

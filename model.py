@@ -5,11 +5,11 @@ from torchmetrics import Accuracy, ConfusionMatrix
 from net.speaker_net import SpeakerNet
 from net.layers import NormalizedMelSpectogram
 from torchmetrics.classification import MulticlassF1Score
+import numpy as np
 
 
 class AudioModel(pl.LightningModule):
-    def __init__(self, model_config, processor_config, sr, number_of_labels, learning_rate, encodings,
-                 dataset_statistics):
+    def __init__(self, model_config, processor_config, sr, number_of_labels, learning_rate, encodings, dataset_statistics=None, save_probs=True):
         super().__init__()
         self.net = SpeakerNet(model_config, number_of_labels)
         win_length = int(processor_config.pop('win_length') * sr)
@@ -36,6 +36,10 @@ class AudioModel(pl.LightningModule):
                 self.index_to_label[value] = key
             else:
                 self.index_to_label[value] = self.index_to_label[value] + f', {key}'
+
+        self.save_probs = save_probs
+        if self.save_probs:
+            self.probs = []
 
     def forward(self, x):
         x = self.audio_processor(x)
@@ -101,22 +105,28 @@ class AudioModel(pl.LightningModule):
 
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
+
         predict = self(x)
         prediction = torch.argmax(predict, dim=1)
         self.test_conf(prediction, y)
-
         loss = self.loss_fn(predict, y)
         self.test_accuracy(prediction, y)
         self.test_f1(prediction, y)
+
+        if self.save_probs:
+            self.probs.append(predict)
 
         return loss
 
     def test_epoch_end(self, outputs):
         test_epoch_acc = self.test_accuracy.compute()
+
         self.test_accuracy.reset()
 
-        loss = sum(outputs) / len(outputs)
+        test_probs = torch.cat(self.probs, dim=0)
+        torch.save(test_probs, 'test_probs.pt')
 
+        loss = sum(outputs) / len(outputs)
         print('test_epoch_accuracy', test_epoch_acc)
         print('test_epoch_loss', loss)
         print("f1 scores", self.test_f1.compute().tolist())

@@ -6,6 +6,7 @@ from dataflow.importers.mozilla import LanguageImporter, AccentImporter
 from dataflow.importers.musan import MusanImporter
 from dataflow.importers.accentdb import AccentDBImporter
 from dataflow.importers.nptel import NptelImporter
+from dataflow.importers.youtube import YoutubeImporter
 
 
 def arg_parser():
@@ -18,6 +19,7 @@ def arg_parser():
 
 name_to_class = {'language_detection':
                             {'MozillaCV': LanguageImporter,
+                             'Youtube': YoutubeImporter,
                              'Musan': MusanImporter},
                  'accent_detection':
                             {'MozillaCV': AccentImporter,

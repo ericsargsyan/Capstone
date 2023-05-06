@@ -64,6 +64,7 @@ if __name__ == "__main__":
 
     checkpoint = torch.load(config['checkpoint_path'][task.split('_')[0]])
     model.load_state_dict(checkpoint['state_dict'], strict=False)
+    # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
     trainer = Trainer(callbacks=[checkpoint_callback], logger=logger, **config['pl_trainer'])
     trainer.fit(model, train_dataloader, val_dataloader)
