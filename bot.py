@@ -29,13 +29,13 @@ def get_user_info(update):
         user = update.message.from_user
         name = user.first_name
         last_name = user.last_name if user.last_name is not None else ''
-        last_name = f'_{last_name}' if last_name is not None else last_name
+        last_name = f'_{last_name}' if last_name != '' else last_name
         username = user.username if user.username is not None else ''
     except AttributeError:
         user = update.effective_user
         name = user.first_name
         last_name = user.last_name if user.last_name is not None else ''
-        last_name = f'_{last_name}' if last_name is not None else last_name
+        last_name = f'_{last_name}' if last_name != '' else last_name
         username = user.username if user.username is not None else ''
 
     return name, last_name, username
@@ -173,15 +173,17 @@ def about_callback(update, context):
                                   text=message, reply_markup=reply_markup)
 
 
-def handle_audio(update, context, model, path, samplerate, duration, encodings):
+def handle_audio(update, context, path, language_model, dialect_model, samplerate, duration,
+                 language_encodings, dialect_encodings):
     audio_file = context.bot.getFile(update.message.audio.file_id)
     language = context.user_data.get('language', 'en')
+    mode = context.user_data.get('detection_mode', 'language')
 
     update.message.reply_text(voice_received[language])
     audio_file_extension = audio_file.file_path.split('.')[-1]
 
     name, last_name, username = get_user_info(update)
-    telegram_user = username if username is not None else f'{name}{last_name}'
+    telegram_user = username if username != '' else f'{name}{last_name}'
 
     location = os.path.join(path, f'{telegram_user}.{audio_file_extension}')
     audio_file.download(location)
@@ -191,10 +193,16 @@ def handle_audio(update, context, model, path, samplerate, duration, encodings):
     os.remove(location)
     data = format_audio(final_destination, self_samplerate=samplerate, resample=False, self_duration=duration)
 
-    spoken_language = detect_spoken_language_and_dialect(data, model, encodings)
-    reply = detected_language[language][spoken_language]
+    if mode == 'language':
+        spoken_language = detect_spoken_language_and_dialect(data, language_model, language_encodings)
+        reply = detected_language[language][spoken_language]
 
-    update.message.reply_text(reply)
+        update.message.reply_text(reply)
+    elif mode == 'dialect':
+        spoken_dialect = detect_spoken_language_and_dialect(data, dialect_model, dialect_encodings)
+        reply = detected_dialect[language][spoken_dialect]
+
+        update.message.reply_text(reply)
 
 
 def handle_voice(update, context, path, language_model, dialect_model, samplerate, duration,
@@ -206,12 +214,6 @@ def handle_voice(update, context, path, language_model, dialect_model, samplerat
 
     name, last_name, username = get_user_info(update)
     telegram_user = username if username != '' else f'{name}{last_name}'
-    print('--------------')
-    print('username', username)
-    print('name', name)
-    print('last_name', last_name)
-    print('telegram_user', telegram_user)
-    print(username)
 
     location = handle_same_filename(os.path.join(path, f'{telegram_user}.wav'))
     voice_file.download(os.path.join(path, f'{telegram_user}.ogg'))
@@ -226,14 +228,16 @@ def handle_voice(update, context, path, language_model, dialect_model, samplerat
         update.message.reply_text(reply)
     elif mode == 'dialect':
         spoken_dialect = detect_spoken_language_and_dialect(data, dialect_model, dialect_encodings)
-        # reply = detected_dialect[language][spoken_dialect]
+        reply = detected_dialect[language][spoken_dialect]
 
-        update.message.reply_text(spoken_dialect)
+        update.message.reply_text(reply)
 
 
-def handle_document(update, context, model, path, samplerate, duration, encodings):
+def handle_document(update, context, path, language_model, dialect_model, samplerate, duration,
+                   language_encodings, dialect_encodings):
     doc_file = context.bot.getFile(update.message.document.file_id)
     language = context.user_data.get('language', 'en')
+    mode = context.user_data.get('detection_mode', 'language')
 
     update.message.reply_text(voice_received[language])
     document_file_extension = doc_file.file_path.split('.')[-1]
@@ -241,27 +245,35 @@ def handle_document(update, context, model, path, samplerate, duration, encoding
     audios_extensions = ['wav', 'mp3', 'mp4', 'm4a', 'ogg', 'oga', 'flac']
 
     name, last_name, username = get_user_info(update)
-    telegram_user = username if username is not None else f'{name}{last_name}'
+    telegram_user = username if username != '' else f'{name}{last_name}'
 
     if document_file_extension not in audios_extensions:
         update.message.reply_text(not_audio_message[language])
         return
 
     location = os.path.join(path, f'{telegram_user}.{document_file_extension}')
+    print(location)
     doc_file.download(location)
     final_destination = handle_same_filename(f'{location.split(".")[0]}.wav')
 
+    print(final_destination)
+
     os.system(f'ffmpeg -y -hwaccel cuda -i {location} -acodec pcm_s16le -ac 1 -ar 16000 {final_destination}')
+    data = format_audio(location, self_samplerate=samplerate, resample=False, self_duration=duration)
+
+    if mode == 'language':
+        spoken_language = detect_spoken_language_and_dialect(data, language_model, language_encodings)
+        reply = detected_language[language][spoken_language]
+
+        update.message.reply_text(reply)
+    elif mode == 'dialect':
+        spoken_dialect = detect_spoken_language_and_dialect(data, dialect_model, dialect_encodings)
+        reply = detected_dialect[language][spoken_dialect]
+
+        update.message.reply_text(reply)
 
     if location[-3:] != 'wav':
         os.remove(location)
-
-    data = format_audio(location, self_samplerate=samplerate, resample=False, self_duration=duration)
-
-    spoken_language = detect_spoken_language_and_dialect(data, model, encodings)
-    reply = detected_language[language][spoken_language]
-
-    update.message.reply_text(reply)
 
 
 def handle_message(update, context):
