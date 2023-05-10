@@ -1,9 +1,9 @@
 import os
 import telegram
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 from telegram.ext import MessageHandler, Filters
-from telegramBot.list_of_replies import *
+from list_of_replies import *
 from infer import detect_spoken_language_and_dialect
 from model import AudioModel
 from utils import ogg_to_wav, handle_same_filename
@@ -197,12 +197,12 @@ def handle_audio(update, context, path, language_model, dialect_model, samplerat
         spoken_language = detect_spoken_language_and_dialect(data, language_model, language_encodings)
         reply = detected_language[language][spoken_language]
 
-        update.message.reply_text(reply)
+        update.message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
     elif mode == 'dialect':
         spoken_dialect = detect_spoken_language_and_dialect(data, dialect_model, dialect_encodings)
         reply = detected_dialect[language][spoken_dialect]
 
-        update.message.reply_text(reply)
+        update.message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
 
 
 def handle_voice(update, context, path, language_model, dialect_model, samplerate, duration,
@@ -225,12 +225,12 @@ def handle_voice(update, context, path, language_model, dialect_model, samplerat
         spoken_language = detect_spoken_language_and_dialect(data, language_model, language_encodings)
         reply = detected_language[language][spoken_language]
 
-        update.message.reply_text(reply)
+        update.message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
     elif mode == 'dialect':
         spoken_dialect = detect_spoken_language_and_dialect(data, dialect_model, dialect_encodings)
         reply = detected_dialect[language][spoken_dialect]
 
-        update.message.reply_text(reply)
+        update.message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
 
 
 def handle_document(update, context, path, language_model, dialect_model, samplerate, duration,
@@ -252,11 +252,8 @@ def handle_document(update, context, path, language_model, dialect_model, sample
         return
 
     location = os.path.join(path, f'{telegram_user}.{document_file_extension}')
-    print(location)
     doc_file.download(location)
     final_destination = handle_same_filename(f'{location.split(".")[0]}.wav')
-
-    print(final_destination)
 
     os.system(f'ffmpeg -y -hwaccel cuda -i {location} -acodec pcm_s16le -ac 1 -ar 16000 {final_destination}')
     data = format_audio(location, self_samplerate=samplerate, resample=False, self_duration=duration)
@@ -265,12 +262,12 @@ def handle_document(update, context, path, language_model, dialect_model, sample
         spoken_language = detect_spoken_language_and_dialect(data, language_model, language_encodings)
         reply = detected_language[language][spoken_language]
 
-        update.message.reply_text(reply)
+        update.message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
     elif mode == 'dialect':
         spoken_dialect = detect_spoken_language_and_dialect(data, dialect_model, dialect_encodings)
         reply = detected_dialect[language][spoken_dialect]
 
-        update.message.reply_text(reply)
+        update.message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
 
     if location[-3:] != 'wav':
         os.remove(location)
