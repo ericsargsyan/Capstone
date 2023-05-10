@@ -135,7 +135,8 @@ detected_language = {
            'de': 'The spoken language in the audio was in German 🇩🇪',
            'be': 'The spoken language in the audio was in Belarusian 🇧🇾',
            'ca': 'The spoken language in the audio was in Catalan',
-           'el': "It seems that I was unable to recognize the language being spoken in tha audio\n"
+           'hy-AM': 'The spoken language in the audio was in Armenian 🇦🇲',
+           'Other': "It seems that I was unable to recognize the language being spoken in tha audio\n"
                  "Please note that my language recognition capabilities are limited to the languages listed in the "
                  "'Trained Languages' section."},
     'es': {'en': 'El idioma hablado en el audio era en inglés 🇺🇸/🇬🇧',
@@ -145,10 +146,10 @@ detected_language = {
            'de': 'El idioma hablado en el audio era en alemán 🇩🇪',
            'be': 'El idioma hablado en el audio era en bielorruso 🇧🇾',
            'ca': 'El idioma hablado en el audio era en catalán',
-           'el': 'Parece que no pude reconocer el idioma que se habla en el audio.\n'
+           'hy-AM': 'El idioma hablado en el audio era en armenio 🇦🇲',
+           'Other': 'Parece que no pude reconocer el idioma que se habla en el audio.\n'
                  'Ten en cuenta que mis capacidades de reconocimiento de idiomas están limitadas a los idiomas '
-                 'enumerados en la sección "Idiomas Entrenados".',
-           'Other': 'La entrada de audio que recibí se identificó como ruido 📢'},
+                 'enumerados en la sección "Idiomas Entrenados".'},
     'fr': {'en': 'La langue parlée dans l\'audio était en anglais 🇺🇸/🇬🇧',
            'fr': 'La langue parlée dans l\'audio était en français 🇫🇷',
            'es': 'La langue parlée dans l\'audio était en espagnol 🇪🇸',
@@ -156,7 +157,8 @@ detected_language = {
            'de': 'La langue parlée dans l\'audio était en allemand 🇩🇪',
            'be': 'La langue parlée dans l\'audio était en biélorusse 🇧🇾',
            'ca': 'La langue parlée dans l\'audio était en catalan',
-           'el': "Il semble que je n'ai pas pu reconnaître la langue parlée dans l'audio.\n"
+           'hy-AM': 'La langue parlée dans l\'audio était en arménien 🇦🇲',
+           'Other': "Il semble que je n'ai pas pu reconnaître la langue parlée dans l'audio.\n"
                  "Veuillez noter que mes capacités de reconnaissance de la langue sont limitées aux langues "
                  "énumérées dans la section 'Langues formées'."},
     'hy': {'en': 'Ձայնագրության մեջ խոսակցության լեզուն անգլերենն էր 🇺🇸/🇬🇧',
@@ -166,20 +168,55 @@ detected_language = {
            'de': 'Ձայնագրության մեջ խոսակցության լեզուն գերմաներեն էր 🇩🇪',
            'be': 'Ձայնագրության մեջ խոսակցության լեզուն բելառուսերեն էր 🇧🇾',
            'ca': 'Ձայնագրության մեջ խոսակցության լեզուն կատալոներեն էր',
-           'el': 'Ես չկարողացա ճանաչել այն լեզուն, որով խոսվում է ձայնագրության մեջ:\n'
+           'hy-AM': 'Ձայնագրության մեջ խոսակցության լեզուն հայերեն էր 🇦🇲',
+           'Other': 'Ես չկարողացա ճանաչել այն լեզուն, որով խոսվում է ձայնագրության մեջ:\n'
                  'Խնդրում եմ նկատի ունենալ, որ իմ լեզվի ճանաչման հնարավորությունները սահմանափակված են '
                  'միայն այն լեզուներով, որոնք նշված են «Վերապատրաստված լեզուներ» բաժնում.'},
-    'ru': {'en': 'Разговорный язык в аудио был на английском 🇺🇸/🇬🇧',
-           'fr': 'Разговорный язык в аудио был на французском 🇫🇷',
-           'es': 'Разговорный язык в аудио был на испанском 🇪🇸',
-           'it': 'Разговорный язык в аудио был на итальянском 🇮🇹',
-           'de': 'Разговорный язык в аудио был на немецком 🇩🇪',
+    'ru': {'en': 'Разговорный язык в аудиозаписи был на английском 🇺🇸/🇬🇧',
+           'fr': 'Разговорный язык в аудиозаписи был на французском 🇫🇷',
+           'es': 'Разговорный язык в аудиозаписи был на испанском 🇪🇸',
+           'it': 'Разговорный язык в аудиозаписи был на итальянском 🇮🇹',
+           'de': 'Разговорный язык в аудиозаписи был на немецком 🇩🇪',
            'be': 'Разговорный язык в аудиозаписи был на белорусском 🇧🇾',
-           'ca': 'Разговорный язык в аудио был на каталонском языке',
-           'el': "Кажется, я не смог распознать язык, на котором говорят в аудио"
+           'ca': 'Разговорный язык в аудиозаписи был на каталонском',
+           'hy-AM': 'Разговорный язык в аудиозаписи был на армянском 🇦🇲',
+           'Other': "Кажется, я не смог распознать язык, на котором говорят в аудио"
                  "Обратите внимание, что мои возможности распознавания языков ограничены языками, перечисленными в"
                  "Pаздел «Изучаемые языки»"}
            }
+
+detected_dialect = {
+    'en':
+        {'United States English': 'The dialect of the speaker in the recording was American English',
+         'England English': 'The dialect of the speaker in the recording was British English',
+         'Indian English': 'The dialect of the speaker in the recording was Indian English',
+         'Australian English': 'The dialect of the speaker in the recording was Australian English',
+         'Canadian English': 'The dialect of the speaker in the recording was Canadian English',
+         'German English': 'The dialect of the speaker in the recording was German English'},
+    'es': {'United States English': 'El dialecto del hablante en la grabación era inglés americano',
+           'England English': 'El dialecto del hablante en la grabación era inglés británico',
+           'Indian English': 'El dialecto del hablante en la grabación era inglés indio',
+           'Australian English': 'El dialecto del hablante en la grabación era inglés australiano',
+           'Canadian English': 'El dialecto del hablante en la grabación era inglés canadiense',
+           'German English': 'El dialecto del hablante en la grabación era inglés alemán'},
+    'fr': {'United States English': "Le dialecte de l'orateur dans l'enregistrement était l'anglais américain",
+           'England English': "Le dialecte de l'orateur dans l'enregistrement était l'anglais britannique",
+           'Indian English': "Le dialecte de l'orateur dans l'enregistrement était l'anglais indien",
+           'Australian English': "Le dialecte de l'orateur dans l'enregistrement était l'anglais australien",
+           'Canadian English': "Le dialecte de l'orateur dans l'enregistrement était l'anglais canadien",
+           'German English': "Le dialecte de l'orateur dans l'enregistrement était l'anglais allemand"},
+    'hy': {'United States English': 'Ձայնագրության մեջ խոսողի բարբառը Ամերիկյան անգլերենն էր',
+           'England English': 'Ձայնագրության մեջ խոսողի բարբառը Բրիտանական անգլերենն էր',
+           'Indian English': 'Ձայնագրության մեջ խոսողի բարբառը Հնդկական անգլերենն էր',
+           'Australian English': 'Ձայնագրության մեջ խոսողի բարբառը Ավստրալական անգլերենն էր',
+           'Canadian English': 'Ձայնագրության մեջ խոսողի բարբառը Կանադական անգլերենն էր',
+           'German English': 'Ձայնագրության մեջ խոսողի բարբառը Գերմանական անգլերենն էր'},
+    'ru': {'United States English': 'Диалектом говорящего в записи был американский английский.',
+           'England English': 'Диалектом говорящего в записи был британский английский.',
+           'Indian English': 'Диалект говорящего в записи был индийским английским.',
+           'Australian English': 'Диалектом говорящего в записи был австралийский английский.',
+           'Canadian English': 'Диалектом говорящего в записи был канадский английский.',
+           'German English': 'Диалект говорящего в записи был немецко-английским.'}}
 
 pretrained_dialects = {
     'en': ["American English 🇺🇸",
@@ -443,3 +480,21 @@ dialects_information = {
 
          }
 }
+
+detection_mode = {'en': 'Choose a detection mode 🌎🗣️.',
+                  'es': 'Elige un modo de detección 🌎🗣️.',
+                  'fr': 'Choisissez un mode de détection 🌎🗣️.',
+                  'hy': 'Ընտրեք հայտնաբերման ռեժիմ 🌎🗣️։',
+                  'ru': 'Выберите режим обнаружения 🌎🗣️.'}
+
+detection_mode_language = {'en': 'Detection mode set to: Detect language',
+                           'es': 'Modo de detección establecido en: Detectar idioma',
+                           'fr': 'Mode de détection défini sur: Détecter la langue',
+                           'hy': 'Հայտնաբերման ռեժիմը ընտրվել է: Նույնականացնել լեզուն',
+                           'ru': 'Установлен режим обнаружения: «Определить язык»'}
+
+detection_mode_dialect = {'en': 'Detection mode set to: Detect dialect',
+                          'es': 'Modo de detección establecido en: Detectar dialecto',
+                          'fr': 'Mode de détection défini sur: Détecter le dialecte',
+                          'hy': 'Հայտնաբերման ռեժիմը ընտրվել է: Նույնականացնել բարբառը',
+                          'ru': 'Установлен режим обнаружения: «Определить диалект»'}
