@@ -35,6 +35,7 @@ def arg_parser():
 def detect_spoken_language_and_dialect(data, model, encodings):
     data = torch.tensor(data, dtype=torch.float32).view(1, -1)
     y_prob = model(data)
+
     label = list(filter(lambda x: encodings[x] == torch.argmax(y_prob, dim=1).squeeze(), encodings))[0]
 
     return label
